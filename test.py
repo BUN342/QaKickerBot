@@ -148,7 +148,7 @@ def handle_text(message):
         grades = cursor.fetchall()
         cursor.close()
 
-        stat = "Рейтинг, среди футболёров: \n"
+        stat = "Рейтинг среди футболёров: \n"
         for n in scopes_with_names:
             for i in grades:        
                 if i[1] > n[1]:
