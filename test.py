@@ -53,7 +53,9 @@ def handle_text(message):
     cursor.close()
 
     #user = User(message.from_user.first_name, 0)
-    if message.chat.type == "private":
+    if(message.from_user.first_name == "Артемич"):
+         bot.send_message(message.chat.id, "Артемич, нет")
+    elif message.chat.type == "private":
         return
     elif (text != "/reg" and text != "/reg@qakickerratingbot") and not results:
         bot.send_message(chat_id, "Ты даже не зарегался\nНапиши /reg, рак")
@@ -156,11 +158,6 @@ def handle_text(message):
                     break       
         bot.send_message(chat_id, stat)
 
-@bot.message_handler(content_types=["text"])
-def text_handler(message):
-    if(message.from_user.first_name == "Артём"):
-         bot.send_message(message.chat.id, "Артём, нет")
-         
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
 # cursor.close()
