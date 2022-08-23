@@ -53,8 +53,8 @@ def handle_text(message):
     cursor.close()
 
     #user = User(message.from_user.first_name, 0)
-    if(message.from_user.first_name == "Yuriy"):
-         bot.send_message(message.chat.id, "Юра, нет")
+    if(message.from_user.first_name == "Kirill"):
+         bot.send_message(message.chat.id, "хХх_КирилЛ_хХх, нет")
     elif message.chat.type == "private":
         return
     elif (text != "/reg" and text != "/reg@qakickerratingbot") and not results:
