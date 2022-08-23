@@ -52,10 +52,10 @@ def handle_text(message):
     results = cursor.fetchall()
     cursor.close()
 
-    #user = User(message.from_user.first_name, 0)
-    if(message.from_user.first_name == "Yuriy"):
-         bot.send_message(message.chat.id, "Юра, нет")
-    elif message.chat.type == "private":
+    # #user = User(message.from_user.first_name, 0)
+    # if(message.from_user.first_name == "Yuriy"):
+    #      bot.send_message(message.chat.id, "Юра, нет")
+    if message.chat.type == "private":
         return
     elif (text != "/reg" and text != "/reg@qakickerratingbot") and not results:
         bot.send_message(chat_id, "Ты даже не зарегался\nНапиши /reg, рак")
