@@ -74,7 +74,7 @@ def handle_text(message):
         else:
             bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
     elif text == "/game" or text == "/game@qakickerratingbot":
-        bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nА ну, парни, поможем %s собрать команду, пиши /me, если хочешь присоединиться.\n Тот, кто первый напишет /me попадет в команду к %s' % message.from_user.first_name)
+        bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nА ну, парни, поможем %s собрать команду, пиши /me, если хочешь присоединиться.\n Тот, кто первый напишет /me попадет в команду к %s' % (message.from_user.first_name, message.from_user.first_name)
         
         # cursor = conn.cursor()
         # sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
