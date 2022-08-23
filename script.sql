@@ -15,6 +15,14 @@ CREATE TABLE public.grades (
 	CONSTRAINT grades_un UNIQUE (name)
 );
 
+CREATE TABLE public.game_sessions (
+	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
+	"user" varchar NULL,
+	win bool NULL,
+	chat_id int4 NULL,
+	last_upd timestamp NULL
+);
+
 insert into grades (name, max_scope) values ('TRAINEE I',150);
 insert into grades (name, max_scope) values ('TRAINEE II',300);
 insert into grades (name, max_scope) values ('TRAINEE III',450);
