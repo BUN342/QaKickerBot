@@ -12,6 +12,8 @@ db_name = 'dbf5g5orv48dsr'
 host='ec2-34-242-8-97.eu-west-1.compute.amazonaws.com'
 port = 5432
 rank = "TRAINEE I"
+MAX_TEAM = 4
+players = 1
 
 conn = psycopg2.connect(dbname=db_name, user=user, 
                         password=password, host=host)
@@ -74,7 +76,7 @@ def handle_text(message):
         else:
             bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
     elif text == "/game" or text == "/game@qakickerratingbot":
-        bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nА ну, парни, поможем %s собрать команду, пиши /me, если хочешь присоединиться.\n Тот, кто первый напишет /me попадет в команду к %s' % (message.from_user.first_name, message.from_user.first_name))
+        bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nА ну, парни, поможем %s собрать команду, пиши /me, если хочешь присоединиться.\nТот, кто первый напишет /me, попадет в команду к %s' % (message.from_user.first_name, message.from_user.first_name))
         
         # cursor = conn.cursor()
         # sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
@@ -115,6 +117,21 @@ def handle_text(message):
     #     cursor.close()
 
     #     bot.send_message(chat_id, 'Как так можно было? Отнимаю 25 очков')
+    elif text == "/me" or text == "/me@qakickerratingbot":
+        global players
+        if(players == MAX_TEAM):
+            bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру')
+        elif(players == 1):
+            bot.send_message(chat_id, 'Союзник найден, теперь против кого играть будем?\nПротивники, пишите /me')
+            players += 1           
+        elif(players < MAX_TEAM):
+            players += 1
+    elif text == "/gamestart" or text == "/gamestart@qakickerratingbot":
+            bot.send_message(chat_id, 'Игра началась!\n*дальнейший функционал будет готов в следующем релизе*')
+            players = 1
+    elif text == "/gamestop" or text == "/gamestop@qakickerratingbot":
+            bot.send_message(chat_id, 'Чё, обоссались?\n*дальнейший функционал будет готов в следующем релизе*')
+            players = 1
     elif text == "/mystat" or text == "/mystat@qakickerratingbot": 
         cursor = conn.cursor()
         sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
