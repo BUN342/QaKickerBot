@@ -1,19 +1,19 @@
+from cmath import nan
 import psycopg2
 from collections import defaultdict
 import telebot
+from datetime import datetime, timedelta
 from telebot import types
 
-TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
+TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
 bot = telebot.TeleBot(TOKEN)
  
-user = 'mdriysdmzxohga'
-password = 'd5016c9242569d17b84950f4d0cb9ba3be135fbdff7d89e09f96785d5845e9a2'
-db_name = 'dbf5g5orv48dsr'
-host='ec2-34-242-8-97.eu-west-1.compute.amazonaws.com'
+user = 'postgres'
+password = '1234'
+db_name = 'test'
+host='localhost'
 port = 5432
 rank = "TRAINEE I"
-MAX_TEAM = 4
-players = 1
 
 conn = psycopg2.connect(dbname=db_name, user=user, 
                         password=password, host=host)
@@ -36,14 +36,14 @@ class User:
 #     return
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, 'Я - бот для подсчета вашего футбольного рейтинга \nЯ знаю всего несколько команд:\n /reg - регистрация на игру\n /win - добавление очков после победы\n /lose - снятие очков после поражения\n /allstats - общая статистика\n /mystat - твоя статистика')
+    bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
 
 @bot.message_handler(commands=['help'])
 def help(message):
-     bot.send_message(message.chat.id, '/reg - регистрация на игру\n /win - добавление очков после победы\n /lose - снятие очков после поражения\n /allstats - общая статистика\n /mystat - твоя статистика')
+     bot.send_message(message.chat.id, 'Вот, чем я могу помочь тебе:\n /reg - регистрация\n /game - начать игру\n /allstats - общая статистика\n /mystat - твоя статистика')
 
 @bot.message_handler(regexp="\/\w+[@\w]*")
-def handle_text(message): 
+def handle_text(message):
     text = message.text.lower()
     chat_id =  message.chat.id
 
@@ -57,9 +57,9 @@ def handle_text(message):
     # #user = User(message.from_user.first_name, 0)
     # if(message.from_user.first_name == "Yuriy"):
     #      bot.send_message(message.chat.id, "Юра, нет")
-    if message.chat.type == "private":
-        return
-    elif (text != "/reg" and text != "/reg@qakickerratingbot") and not results:
+    # if message.chat.type == "private":
+    #     return
+    if (text != "/reg" and text != "/reg@qakickerratingbot") and not results:
         bot.send_message(chat_id, "Ты даже не зарегался\nНапиши /reg, рак")
     elif text == "/reg" or text == "/reg@qakickerratingbot":
         if not results:
@@ -76,12 +76,13 @@ def handle_text(message):
         else:
             bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
     elif text == "/game" or text == "/game@qakickerratingbot":
-        bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nА ну, парни, поможем %s собрать команду, пиши /me, если хочешь присоединиться.\nТот, кто первый напишет /me, попадет в команду к %s' % (message.from_user.first_name, message.from_user.first_name))
+        bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников, пиши /me, если хочешь присоединиться к игре.' % message.from_user.first_name)
         
-        # cursor = conn.cursor()
-        # sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
-        # data = (message.from_user.first_name,)
-        # cursor.execute(sqlSEL, data)
+        cursor = conn.cursor()
+        sql = "INSERT INTO game_sessions (user, win, chat_id, last_upd) VALUES (%s, %s, %s, %s);"
+        
+        data = (message.from_user.first_name, None, chat_id, datetime.utcnow())
+        cursor.execute(sql, data)
         # user_scope = cursor.fetchall()
         # coins = user_scope[0][0]
         # coins+=25
@@ -90,8 +91,8 @@ def handle_text(message):
         # data = (coins, message.from_user.first_name)
         # cursor.execute(sqlUPD, data)
         
-        # conn.commit()
-        # cursor.close()
+        conn.commit()
+        cursor.close()
 
         
     # elif text == "/lose" or text == "/lose@qakickerratingbot":
@@ -118,14 +119,22 @@ def handle_text(message):
 
     #     bot.send_message(chat_id, 'Как так можно было? Отнимаю 25 очков')
     elif text == "/me" or text == "/me@qakickerratingbot":
-        global players
-        if(players == MAX_TEAM):
+        date = datetime.utcnow()+timedelta(minutes=30)
+
+        cursor = conn.cursor()
+        sql="SELECT last_upd FROM game_sessions WHERE chat_id = %s ORDER BY last_upd DESC;"
+        data=(chat_id,)
+
+        cursor.execute(sql, data)
+        game = cursor.fetchone()
+        cursor.close()
+
+        if game is None:
+            bot.send_message(chat_id, 'Данных нет!')
+        elif(game >= (datetime.utcnow()+timedelta(minutes=15))):
+            bot.send_message(chat_id, 'Игр нет!')
+        else:
             bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру')
-        elif(players == 1):
-            bot.send_message(chat_id, 'Союзник найден, теперь против кого играть будем?\nПротивники, пишите /me')
-            players += 1           
-        elif(players < MAX_TEAM):
-            players += 1
     elif text == "/gamestart" or text == "/gamestart@qakickerratingbot":
             bot.send_message(chat_id, 'Игра началась!\n*дальнейший функционал будет готов в следующем релизе*')
             players = 1
