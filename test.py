@@ -56,7 +56,7 @@ def handle_text(message):
     if(message.from_user.username == "Артемич"):
          bot.send_message(message.chat.id, "Артемич, нет")
     elif message.chat.type == "private":
-        bot.send_message(message.from_user.username)
+        bot.send_message(message.chat.id, message.from_user.username)
     elif (text != "/reg" and text != "/reg@qakickerratingbot") and not results:
         bot.send_message(chat_id, "Ты даже не зарегался\nНапиши /reg, рак")
     elif text == "/reg" or text == "/reg@qakickerratingbot":
