@@ -204,5 +204,4 @@ def handle_text(message):
         bot.send_message(chat_id, stat)
 
 # Запускаем бота
-<<<<<<< HEAD
 bot.polling(none_stop=True, interval=0)
