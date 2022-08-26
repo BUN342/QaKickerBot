@@ -116,7 +116,7 @@ def handle_text(message):
         is_player = cursor.fetchall()
         
 
-        if is_player is not None:
+        if is_player is None:
             bot.send_message(chat_id, '%s, ты уже записался на игру, жди начала' % message.from_user.first_name)
             return
         
@@ -133,8 +133,7 @@ def handle_text(message):
             bot.send_message(chat_id, 'Данных нет!')
         elif(round(date.timestamp()) >= last_game[0][1].timestamp()):
             bot.send_message(chat_id, 'Игр нет!')
-        else:
-            
+        else:        
             sql="INSERT INTO game_sessions (tg_name, win, chat_id, last_upd, game_id, side) VALUES (%s, %s, %s, %s, %s, %s);"        
             
             if side is True:
