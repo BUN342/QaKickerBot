@@ -5,8 +5,8 @@ import telebot
 from datetime import datetime, timedelta
 from telebot import types
 
-#TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
-TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
+TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
+#TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
  
 user = 'mdriysdmzxohga'
@@ -15,6 +15,7 @@ db_name = 'dbf5g5orv48dsr'
 host='ec2-34-242-8-97.eu-west-1.compute.amazonaws.com'
 port = 5432
 rank = "TRAINEE I"
+POOL_TIME_FOR_GAME=5
 
 conn = psycopg2.connect(dbname=db_name, user=user, 
                         password=password, host=host)
@@ -80,10 +81,10 @@ def handle_text(message):
         bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников, пиши /me, если хочешь присоединиться к игре.' % message.from_user.first_name)
         
         cursor = conn.cursor()
-        sql = "INSERT INTO game_sessions (user, win, chat_id, last_upd) VALUES (%s, %s, %s, %s);"
+        sqlINS = "INSERT INTO game_sessions (tg_name, win, chat_id, last_upd, game_id) VALUES (%s, %s, %s, %s, %s);"
         
-        data = (message.from_user.first_name, None, chat_id, datetime.utcnow())
-        cursor.execute(sql, data)
+        data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), message.from_user.id)
+        cursor.execute(sqlINS, data)
         # user_scope = cursor.fetchall()
         # coins = user_scope[0][0]
         # coins+=25
@@ -120,19 +121,19 @@ def handle_text(message):
 
     #     bot.send_message(chat_id, 'Как так можно было? Отнимаю 25 очков')
     elif text == "/me" or text == "/me@qakickerratingbot":
-        date = datetime.utcnow()+timedelta(minutes=30)
+        date = datetime.utcnow()-timedelta(minutes=POOL_TIME_FOR_GAME)
 
         cursor = conn.cursor()
-        sql="SELECT last_upd FROM game_sessions WHERE chat_id = %s ORDER BY last_upd DESC;"
+        sql="SELECT game_id, last_upd FROM game_sessions WHERE chat_id = %s ORDER BY last_upd DESC;"
         data=(chat_id,)
 
         cursor.execute(sql, data)
-        game = cursor.fetchone()
+        last_game = cursor.fetchone()
         cursor.close()
 
-        if game is None:
+        if last_game is None:
             bot.send_message(chat_id, 'Данных нет!')
-        elif(game >= (datetime.utcnow()+timedelta(minutes=15))):
+        elif(round(date.timestamp()) >= last_game[1].timestamp()):
             bot.send_message(chat_id, 'Игр нет!')
         else:
             bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру')
