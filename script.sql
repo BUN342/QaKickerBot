@@ -17,10 +17,13 @@ CREATE TABLE public.grades (
 
 CREATE TABLE public.game_sessions (
 	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
-	"user" varchar NULL,
+	tg_name varchar NULL,
 	win bool NULL,
 	chat_id int4 NULL,
-	last_upd timestamp NULL
+	last_upd timestamp NULL,
+	game_id int4 NOT NULL,
+	side bool NULL,
+	CONSTRAINT game_sessions_pk PRIMARY KEY (id)
 );
 
 insert into grades (name, max_scope) values ('TRAINEE I',150);
