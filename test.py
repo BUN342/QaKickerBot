@@ -77,13 +77,13 @@ def handle_text(message):
             bot.send_message(chat_id, message.from_user.first_name + ', ты зарегался и сейчас у тебя TRAINEE I ранг.\nДумал все так просто будет?')
         else:
             bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
-    elif text == "/game" or text == "/game@qakickerratingbot":
+    elif text == "/game4" or text == "/game4@qakickerratingbot":
         bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников, пиши /me, если хочешь присоединиться к игре.' % message.from_user.first_name)
         
         cursor = conn.cursor()
-        sqlINS = "INSERT INTO game_sessions (tg_name, win, chat_id, last_upd, game_id) VALUES (%s, %s, %s, %s, %s);"
+        sqlINS = "INSERT INTO game_sessions (tg_name, win, chat_id, last_upd, game_id, side) VALUES (%s, %s, %s, %s, %s, %s);"
         
-        data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), message.from_user.id)
+        data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), message.from_user.id, True)
         cursor.execute(sqlINS, data)
         # user_scope = cursor.fetchall()
         # coins = user_scope[0][0]
@@ -124,19 +124,32 @@ def handle_text(message):
         date = datetime.utcnow()-timedelta(minutes=POOL_TIME_FOR_GAME)
 
         cursor = conn.cursor()
-        sql="SELECT game_id, last_upd FROM game_sessions WHERE chat_id = %s ORDER BY last_upd DESC;"
-        data=(chat_id,)
+        sql="SELECT game_id, last_upd, side FROM game_sessions WHERE chat_id = %s AND last_upd > TO_TIMESTAMP(%s) ORDER BY last_upd DESC;"
+        data=(chat_id, round(date.timestamp()))
 
         cursor.execute(sql, data)
-        last_game = cursor.fetchone()
+        last_game = cursor.fetchall()
         cursor.close()
 
         if last_game is None:
             bot.send_message(chat_id, 'Данных нет!')
-        elif(round(date.timestamp()) >= last_game[1].timestamp()):
+        elif(round(date.timestamp()) >= last_game[0][1].timestamp()):
             bot.send_message(chat_id, 'Игр нет!')
         else:
+            cursor = conn.cursor()
+            sql="INSERT INTO game_sessions (tg_name, win, chat_id, last_upd, game_id, side) VALUES (%s, %s, %s, %s, %s, %s);"        
+            
+            if last_game[0][2] is True:
+                data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), last_game[0][0], True)
+                cursor.execute(sql, data)
+            else:
+                data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), last_game[0][0], False)
+                cursor.execute(sql, data)
+
             bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру')
+
+            conn.commit()
+            cursor.close()
     elif text == "/gamestart" or text == "/gamestart@qakickerratingbot":
             bot.send_message(chat_id, 'Игра началась!\n*дальнейший функционал будет готов в следующем релизе*')
             players = 1
