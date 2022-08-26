@@ -5,7 +5,7 @@ import telebot
 from datetime import datetime, timedelta
 from telebot import types
 
-TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
+#TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
 bot = telebot.TeleBot(TOKEN)
  
 user = 'postgres'
