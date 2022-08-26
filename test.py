@@ -84,13 +84,11 @@ def handle_text(message):
     elif text == "/game4" or text == "/game4@qakickerratingbot":
         date = datetime.utcnow()-timedelta(minutes=POOL_TIME_FOR_GAME)
         
-        sql = "SELECT last_upd FROM game_sessions WHERE last_upd > TO_TIMESTAMP(%s) ORDER BY last_upd DESC;"
-        data = (round(date.timestamp()),)
-
+        sql = "SELECT last_upd FROM game_sessions WHERE last_upd > TIMESTAMP%s ORDER BY last_upd DESC;"
+        #data = (round(date.timestamp()),)
+        data = (date,)
         cursor.execute(sql, data)
         is_games = cursor.fetchone()
-
-        
 
         if(is_games is not None):
             bot.send_message(chat_id, 'Игру уже кто-то начал.\nЗаверши предыдущую, прежде чем начать новую.')
@@ -111,8 +109,8 @@ def handle_text(message):
 
         
 
-        sql = "SELECT tg_name FROM game_sessions WHERE last_upd > TO_TIMESTAMP(%s) AND tg_name = %s ORDER BY last_upd DESC;"
-        data = (round(date.timestamp()),message.from_user.first_name)
+        sql = "SELECT tg_name FROM game_sessions WHERE last_upd > TIMESTAMP%s AND tg_name = %s ORDER BY last_upd DESC;"
+        data = (date,message.from_user.first_name)
 
         cursor.execute(sql, data)
         is_player = cursor.fetchall()
