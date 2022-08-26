@@ -80,8 +80,8 @@ def handle_text(message):
     elif text == "/game4" or text == "/game4@qakickerratingbot":
         date = datetime.utcnow()-timedelta(minutes=POOL_TIME_FOR_GAME)
         
-        sql = "SELECT last_upd FROM game_sessions WHERE last_upd > TO_TIMESTAMP(%s) ORDER BY last_upd DESC;"
-        data = (round(date.timestamp()),)
+        sql = "SELECT last_upd FROM game_sessions WHERE last_upd > TIMESTAMP%s ORDER BY last_upd DESC;"
+        data = (date,)
 
         cursor.execute(sql, data)
         is_games = cursor.fetchone()
@@ -140,21 +140,20 @@ def handle_text(message):
 
         
 
-        sql = "SELECT tg_name FROM game_sessions WHERE last_upd > TO_TIMESTAMP(%s) AND tg_name = %s ORDER BY last_upd DESC;"
-        data = (round(date.timestamp()),message.from_user.first_name)
+        sql = "SELECT tg_name FROM game_sessions WHERE last_upd > TIMESTAMP%s AND tg_name = %s ORDER BY last_upd DESC;"
+        data = (date,message.from_user.first_name)
 
         cursor.execute(sql, data)
         is_player = cursor.fetchall()
-        
 
-        if is_player is not None:
+        if (len(is_player) != 0):
             bot.send_message(chat_id, '%s, ты уже записался на игру, жди начала' % message.from_user.first_name)
             return
         
 
         
-        sql="SELECT game_id, last_upd, side FROM game_sessions WHERE chat_id = %s AND last_upd > TO_TIMESTAMP(%s) ORDER BY last_upd DESC;"
-        data=(chat_id, round(date.timestamp()))
+        sql="SELECT game_id, last_upd, side FROM game_sessions WHERE chat_id = %s AND last_upd > TIMESTAMP%s ORDER BY last_upd DESC;"
+        data=(chat_id, date)
 
         cursor.execute(sql, data)
         last_game = cursor.fetchall()
