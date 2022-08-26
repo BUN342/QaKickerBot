@@ -109,7 +109,7 @@ def handle_text(message):
 
         
 
-        sql = "SELECT tg_name FROM game_sessions WHERE last_upd > TIMESTAMP%s AND tg_name = %s ORDER BY last_upd DESC;"
+        sql = "SELECT tg_name FROM game_sessions WHERE tg_name = %s AND last_upd > TIMESTAMP%s ORDER BY last_upd DESC;"
         data = (date,message.from_user.first_name)
 
         cursor.execute(sql, data)
