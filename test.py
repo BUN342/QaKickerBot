@@ -5,8 +5,7 @@ import telebot
 from datetime import datetime, timedelta
 from telebot import types
 
-TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
-#TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
+TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
  
 user = 'mdriysdmzxohga'
@@ -33,9 +32,6 @@ class User:
         return self.__tg_name
     def getScope(self):
         return self.__scope
-# @bot.message_handler(commands=["start"])
-# def handle_atrem(message):
-#     return
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
@@ -66,18 +62,12 @@ def handle_text(message):
     results = cursor.fetchall()
     cursor.close()
 
-    # #user = User(message.from_user.first_name, 0)
-    # if(message.from_user.first_name == "Yuriy"):
-    #      bot.send_message(message.chat.id, "Юра, нет")
-    # if message.chat.type == "private":
-    #     return
     if (text != "/reg" and text != "/reg@qakickerratingbot") and not results:
         bot.send_message(chat_id, "Ты даже не зарегался\nНапиши /reg, рак")
     elif text == "/reg" or text == "/reg@qakickerratingbot":
         if not results:
             cursor = conn.cursor()
             sql = "INSERT INTO users (tg_name, scope) VALUES (%s, %s);"
-            #data = (user.getName(), user.getScope())
             data = (message.from_user.first_name, 0)
 
             cursor.execute(sql, data)
@@ -110,41 +100,9 @@ def handle_text(message):
         
         data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), message.from_user.id, True)
         cursor.execute(sqlINS, data)
-        # user_scope = cursor.fetchall()
-        # coins = user_scope[0][0]
-        # coins+=25
-
-        # sqlUPD = "UPDATE users SET scope = %s WHERE tg_name = %s;"
-        # data = (coins, message.from_user.first_name)
-        # cursor.execute(sqlUPD, data)
         
         conn.commit()
         cursor.close()
-
-        
-    # elif text == "/lose" or text == "/lose@qakickerratingbot":
-    #     cursor = conn.cursor()
-    #     sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
-    #     data = (message.from_user.first_name,)
-    #     cursor.execute(sqlSEL, data)
-    #     user_scope = cursor.fetchall()
-    #     coins = user_scope[0][0]
-        
-    #     if(coins==0):
-    #         bot.send_message(message.chat.id, 'Не от чего отнимать рейтинг')
-    #         return
-    #     elif(coins < 25 and coins >= 0):
-    #         coins = 0
-    #     else:
-    #         coins -=25
-        
-    #     sqlUPD = "UPDATE users SET scope = %s WHERE tg_name = %s;"
-    #     data = (coins, message.from_user.first_name)
-    #     cursor.execute(sqlUPD, data)
-    #     conn.commit()
-    #     cursor.close()
-
-    #     bot.send_message(chat_id, 'Как так можно было? Отнимаю 25 очков')
     elif text == "/me" or text == "/me@qakickerratingbot":
         side = True
         date = datetime.utcnow()-timedelta(minutes=POOL_TIME_FOR_GAME)
@@ -245,5 +203,3 @@ def handle_text(message):
 
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
-# cursor.close()
-# conn.close()
