@@ -116,7 +116,7 @@ def handle_text(message):
         is_player = cursor.fetchall()
         
 
-        if is_player is None:
+        if is_player is not None:
             bot.send_message(chat_id, '%s, ты уже записался на игру, жди начала' % message.from_user.first_name)
             return
         
