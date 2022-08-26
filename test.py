@@ -106,7 +106,6 @@ def handle_text(message):
         cursor.execute(sqlINS, data)
         
         conn.commit()
-        cursor.close()
     elif text == "/me" or text == "/me@qakickerratingbot":
         side = True
         date = datetime.utcnow()-timedelta(minutes=POOL_TIME_FOR_GAME)
