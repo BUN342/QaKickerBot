@@ -60,7 +60,6 @@ def handle_text(message):
     data = (message.from_user.first_name,)
     cursor.execute(sql, data)
     results = cursor.fetchall()
-    cursor.close()
 
     # #user = User(message.from_user.first_name, 0)
     # if(message.from_user.first_name == "Yuriy"):
