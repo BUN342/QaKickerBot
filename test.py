@@ -88,7 +88,7 @@ def handle_text(message):
 
         
 
-        if(is_games is None):
+        if(is_games is not None):
             bot.send_message(chat_id, 'Игру уже кто-то начал.\nЗаверши предыдущую, прежде чем начать новую.')
             return
 
@@ -96,7 +96,7 @@ def handle_text(message):
         
         
         sqlINS = "INSERT INTO game_sessions (tg_name, win, chat_id, last_upd, game_id, side) VALUES (%s, %s, %s, %s, %s, %s);"
-        
+        print(datetime.utcnow())
         data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), message.from_user.id, True)
         cursor.execute(sqlINS, data)
         # user_scope = cursor.fetchall()
