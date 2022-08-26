@@ -80,12 +80,12 @@ def handle_text(message):
     elif text == "/game4" or text == "/game4@qakickerratingbot":
         date = datetime.utcnow()-timedelta(minutes=POOL_TIME_FOR_GAME)
         cursor = conn.cursor()
-
+        print(round(date.timestamp()))
         sql = "SELECT last_upd FROM game_sessions WHERE last_upd > TO_TIMESTAMP(%s) ORDER BY last_upd DESC;"
         data = (round(date.timestamp()),)
 
         cursor.execute(sql, data)
-        is_games = cursor.fetchall()
+        is_games = cursor.fetchone()
 
         cursor.close()
 
