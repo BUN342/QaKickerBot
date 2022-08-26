@@ -42,7 +42,12 @@ def start(message):
 def help(message):
      bot.send_message(message.chat.id, '/reg - регистрация на игру\n /win - добавление очков после победы\n /lose - снятие очков после поражения\n /allstats - общая статистика\n /mystat - твоя статистика')
 
-@bot.message_handler(regexp="футб\w*")
+@bot.message_handler(regexp="\w*\s*ф\w*\s*у\w*\s*т\w*\s*б")
+def footballMsg(message):
+     chat_id =  message.chat.id
+     bot.send_message(chat_id, "Ага, я что-то услышал про футбол...\nРегайся на на игру командой /game")
+
+@bot.message_handler(regexp="\w*\s*f\w*\s*o\w*\s*o\w*\s*t\w*\s*b")
 def footballMsg(message):
      chat_id =  message.chat.id
      bot.send_message(chat_id, "Ага, я что-то услышал про футбол...\nРегайся на на игру командой /game")
