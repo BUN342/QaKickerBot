@@ -105,6 +105,7 @@ def handle_text(message):
         isGame = now_chat.createGame(message.from_user.first_name)
         if(isGame is False):
             bot.send_message(chat_id, 'Игру уже кто-то начал.\nЗаверши предыдущую, прежде чем начать новую.\nКомианда /gamestop')
+            return
 
         bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников, пиши /me, если хочешь присоединиться к игре.' % message.from_user.first_name)
         
