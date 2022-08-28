@@ -113,7 +113,8 @@ def handle_text(message):
         if(isMe == False):
             bot.send_message(chat_id, '%s, либо создавай игру, либо ты уже записался на игру и жди начала, либо иди на х*й.' % message.from_user.first_name)
         else:
-            bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.')
+            #bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.')
+            bot.send_message(chat_id, '%s, ты записался. Если все готовы, то пишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.')
 
     elif text == "/gamestart" or text == "/gamestart@qakickerratingbot":
         isGameStart = now_chat.gameStart()
