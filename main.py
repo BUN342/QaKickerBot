@@ -1,4 +1,5 @@
 from cmath import nan
+import time
 import psycopg2
 from collections import defaultdict
 import telebot
@@ -7,10 +8,12 @@ from telebot import types
 import threading
 import chat
 
-TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
+TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
+#TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
  
 chats = {}
+isStartPressed = False
 user = 'mdriysdmzxohga'
 password = 'd5016c9242569d17b84950f4d0cb9ba3be135fbdff7d89e09f96785d5845e9a2'
 db_name = 'dbf5g5orv48dsr'
@@ -22,20 +25,39 @@ POOL_TIME_FOR_GAME=5
 conn = psycopg2.connect(dbname=db_name, user=user, 
                         password=password, host=host)
 
-def test_timer(message):
-    bot.send_message(message.chat.id, 'Дарова, хуила')
+def test_timer(message, seconds_left):
+    total_seconds = seconds_left
+    while total_seconds > 0:
+        time.sleep(1)
+        total_seconds -= 1
+
+    global chats
+    chats = {}
+    bot.send_message(message.chat.id, 'Расовая чистка произведена')
+    test_timer(message, seconds_left)
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    global isStartPressed
+    if(isStartPressed is True):
+        bot.send_message(message.chat.id, 'Бот уже работает, тебе заняться нечем?')
+        return
+    
+    isStartPressed = True
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
     e1 = threading.Event()
-    t1 = threading.Thread(target=test_timer)
+    t1 = threading.Thread(target=test_timer, args=(message,300))
     t1.start()
     e1.set()
 
 @bot.message_handler(commands=['help'])
 def help(message):
-     bot.send_message(message.chat.id, 'Вот, чем я могу помочь тебе:\n /reg - регистрация\n /game - начать игру\n /allstats - общая статистика\n /mystat - твоя статистика')
+    global isStartPressed
+    if(isStartPressed is False):
+        bot.send_message(message.chat.id, 'Запусти бота, чорт')
+        return
+
+    bot.send_message(message.chat.id, 'Вот, чем я могу помочь тебе:\n /reg - регистрация\n /game - начать игру\n /allstats - общая статистика\n /mystat - твоя статистика')
 
 @bot.message_handler(regexp="\w*\s*ф\w*\s*у\w*\s*т\w*\s*б\w*\s*о\w*\s*л")
 def footballMsg(message):
@@ -49,6 +71,11 @@ def footballMsg(message):
 
 @bot.message_handler(regexp="\/\w+[@\w]*")
 def handle_text(message):
+    global isStartPressed
+    if(isStartPressed is False):
+        bot.send_message(message.chat.id, 'Запусти бота, чорт')
+        return
+
     text = message.text.lower()
     chat_id =  message.chat.id
 
