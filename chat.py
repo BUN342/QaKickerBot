@@ -40,7 +40,7 @@ class Chat:
         elif(userName in self.__players):
             return False
 
-        self.__player[userName] = self.__side
+        self.__players[userName] = self.__side
 
         if(self.__side == 1):
             self.__side = 0
