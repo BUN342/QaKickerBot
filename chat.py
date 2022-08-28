@@ -78,6 +78,7 @@ class Chat:
     def gameStop(self,): 
         if(self.__isGameNow is False and len(self.__players) > 0):
             self.__players = {}
+            self.__isGameNow = False
             return True
         elif(self.__isGameNow is False): 
             return False

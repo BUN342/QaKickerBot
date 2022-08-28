@@ -34,7 +34,7 @@ def test_timer(message, seconds_left):
 
     global chats
     chats = {}
-    bot.send_message(message.chat.id, 'Расовая чистка произведена')
+    bot.send_message(message.chat.id, 'Сканирование чата...')
     test_timer(message, seconds_left)
 
 @bot.message_handler(commands=['start'])
