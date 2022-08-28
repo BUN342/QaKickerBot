@@ -1,2 +1,2 @@
-bot: python3 main.py
+bot: python3 123.py
 heroku ps:scale bot=1
