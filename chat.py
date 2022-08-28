@@ -2,8 +2,8 @@ import user
 import registration
 
 class Chat:
-    def __init__(self, chatId, connection):
-        self.__chatId=chatId
+    def __init__(self, connection):
+        #self.__chatId=chatId
         self.__isGameNow=False
         self.__connection=connection
         self.__cursor=connection.cursor()
@@ -48,13 +48,23 @@ class Chat:
             self.__side = 1
 
         return True
-    def writeResult(self, result): 
+    def writeResult(self, result, userName): 
+        if(self.__isGameNow is True):
+            return False
+
+        if(userName != self.__creatorOfGame):
+            return False
+
         usr = user.User()
         for player in self.__players:         
-            usr.setScope(player[1], player[0], self.__cursor)
+            usr.setScope(result, player[1], player[0], self.__cursor)
             self.__connection.commit()
     
     def gameStart(self,): 
         self.__isGameNow = True
-        return
-    def gameStop(self,): return
+    def gameStop(self,): 
+        self.__isGameNow = False
+        self.__players = {}
+    def getMe(self, userName):
+         usr = user.User()
+         return usr.getScope(userName, self.__cursor)

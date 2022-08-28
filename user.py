@@ -3,7 +3,7 @@ class User:
     #     self.__tg_name=name
     #     self.__scope=scope
 
-    def setScope(self, side, userName, cursor):
+    def setScope(self, result, side, userName, cursor):
         sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
         data = (userName,)
         cursor.execute(sqlSEL, data)
@@ -16,7 +16,7 @@ class User:
         elif(coins < 25 and coins >= 0):
             coins = 0
         else:
-            if(side is True):
+            if(result is True):
                 coins +=25
             else:
                 coins -=25

@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from telebot import types
 import threading
 import chat
+import registration
 
 TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
 #TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
@@ -44,7 +45,13 @@ def start(message):
         return
     
     isStartPressed = True
+
+    now_chat = chat.Chat(conn)
+    global chats
+    chats[message.chat.id] = now_chat
+
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
+
     e1 = threading.Event()
     t1 = threading.Thread(target=test_timer, args=(message,300))
     t1.start()
@@ -78,132 +85,46 @@ def handle_text(message):
 
     text = message.text.lower()
     chat_id =  message.chat.id
+    
+    global chats
+    key = chat_id
+    global now_chat
+    if(key not in chats):
+        now_chat = chat.Chat(conn)
+    else: 
+        now_chat = chats[key]
 
-    cursor = conn.cursor()
-    sql = """SELECT * FROM users WHERE tg_name = %s;"""
-    data = (message.from_user.first_name,)
-    cursor.execute(sql, data)
-    results = cursor.fetchall()
+    isReg = now_chat.registration(message.from_user.first_name)
 
-    # #user = User(message.from_user.first_name, 0)
-    # if(message.from_user.first_name == "Yuriy"):
-    #      bot.send_message(message.chat.id, "Юра, нет")
-    # if message.chat.type == "private":
-    #     return
-    if (text != "/reg" and text != "/reg@qakickerratingbot") and not results:
-        bot.send_message(chat_id, "Ты даже не зарегался\nНапиши /reg, рак")
-    elif text == "/reg" or text == "/reg@qakickerratingbot":
-        if not results:
-            
-            sql = "INSERT INTO users (tg_name, scope) VALUES (%s, %s);"
-            data = (message.from_user.first_name, 0)
-
-            cursor.execute(sql, data)
-            conn.commit()
-            
-            
+    if (text == "/reg" or text == "/reg@qakickerratingbot"):
+        if(isReg is True):
             bot.send_message(chat_id, message.from_user.first_name + ', ты зарегался и сейчас у тебя TRAINEE I ранг.\nДумал все так просто будет?')
         else:
             bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
-    elif text == "/game4" or text == "/game4@qakickerratingbot":
-        date = datetime.utcnow()-timedelta(minutes=POOL_TIME_FOR_GAME)
-        
-        sql = "SELECT last_upd FROM game_sessions WHERE last_upd > TIMESTAMP%s ORDER BY last_upd DESC;"
-        #data = (round(date.timestamp()),)
-        data = (date,)
-        cursor.execute(sql, data)
-        is_games = cursor.fetchone()
-
-        
-
-        if(is_games is None):
-            bot.send_message(chat_id, 'Игру уже кто-то начал.\nЗаверши предыдущую, прежде чем начать новую.')
-            return
+    elif text == "/game" or text == "/game@qakickerratingbot":
+        isGame = now_chat.createGame(message.from_user.first_name)
+        if(isGame is False):
+            bot.send_message(chat_id, 'Игру уже кто-то начал.\nЗаверши предыдущую, прежде чем начать новую.\nКомианда /gamestop')
 
         bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников, пиши /me, если хочешь присоединиться к игре.' % message.from_user.first_name)
         
-        
-        sqlINS = "INSERT INTO game_sessions (tg_name, win, chat_id, last_upd, game_id, side) VALUES (%s, %s, %s, %s, %s, %s);"
-        print(datetime.utcnow())
-        data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), message.from_user.id, True)
-        cursor.execute(sqlINS, data)
-        
-        conn.commit()
     elif text == "/me" or text == "/me@qakickerratingbot":
-        side = True
-        date = datetime.utcnow()-timedelta(minutes=POOL_TIME_FOR_GAME)
-
         
+        bot.send_message(chat_id, '%s, ты уже записался на игру, жди начала' % message.from_user.first_name)
 
-        sql = "SELECT tg_name FROM game_sessions WHERE tg_name=%s AND last_upd > TIMESTAMP%s ORDER BY last_upd DESC;"
-        data = (message.from_user.first_name,date)
+        bot.send_message(chat_id, 'Данных нет!')
 
-        cursor.execute(sql, data)
-        is_player = cursor.fetchall()
-        
+        bot.send_message(chat_id, 'Игр нет!')
 
-        if (len(is_player) != 0):
-            bot.send_message(chat_id, '%s, ты уже записался на игру, жди начала' % message.from_user.first_name)
-            return
-        
+        bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру')
 
-        
-        sql="SELECT game_id, last_upd, side FROM game_sessions WHERE chat_id = %s AND last_upd > TIMESTAMP%s ORDER BY last_upd DESC;"
-        data=(chat_id, date)
-
-        cursor.execute(sql, data)
-        last_game = cursor.fetchall()
-        
-
-        if last_game is None:
-            bot.send_message(chat_id, 'Данных нет!')
-        elif(round(date.timestamp()) >= last_game[0][1].timestamp()):
-            bot.send_message(chat_id, 'Игр нет!')
-        else:        
-            sql="INSERT INTO game_sessions (tg_name, win, chat_id, last_upd, game_id, side) VALUES (%s, %s, %s, %s, %s, %s);"        
-            
-            if side is True:
-                data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), last_game[0][0], True)
-                cursor.execute(sql, data)
-                side = False
-            else:
-                data = (message.from_user.first_name, None, chat_id, datetime.utcnow(), last_game[0][0], False)
-                cursor.execute(sql, data)
-                side = True
-
-            bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру')
-
-            conn.commit()
             
     elif text == "/gamestart" or text == "/gamestart@qakickerratingbot":
             bot.send_message(chat_id, 'Игра началась!\n*дальнейший функционал будет готов в следующем релизе*')
     elif text == "/gamestop" or text == "/gamestop@qakickerratingbot":
             bot.send_message(chat_id, 'Чё, обоссались?\n*дальнейший функционал будет готов в следующем релизе*')
     elif text == "/mystat" or text == "/mystat@qakickerratingbot": 
-        
-        sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
-        data = (message.from_user.first_name,)
-        cursor.execute(sqlSEL, data)
-        my_scope = cursor.fetchall()
-
-        sql = "SELECT name, max_scope FROM grades ORDER BY max_scope ASC"
-        cursor.execute(sql)
-        grades = cursor.fetchall()
-        
-
-        j = 0
-        for i in grades:
-            if i[1] > my_scope[0][0]:
-                if(j == 0):
-                    j += 1
-                
-                global rank
-                rank = i[0]
-                break
-            else:
-                j += 1
-                
-        bot.send_message(chat_id, message.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % rank)
+        bot.send_message(chat_id, message.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % now_chat.getMe(message.from_user.first_name))
             
     elif text == "/allstats" or text == "/allstats@qakickerratingbot":
         
