@@ -19,19 +19,6 @@ POOL_TIME_FOR_GAME=5
 conn = psycopg2.connect(dbname=db_name, user=user, 
                         password=password, host=host)
 
-class User:
-    def __init__(self, name, scope):
-        self.__tg_name=name
-        self.__scope=scope
-
-    def setName(self) : return
-    def setScope(self, newScope):
-        self.__scope=newScope
-
-    def getName(self):
-        return self.__tg_name
-    def getScope(self):
-        return self.__scope
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
