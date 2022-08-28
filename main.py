@@ -125,25 +125,8 @@ def handle_text(message):
             bot.send_message(chat_id, 'Чё, обоссались?\n*дальнейший функционал будет готов в следующем релизе*')
     elif text == "/mystat" or text == "/mystat@qakickerratingbot": 
         bot.send_message(chat_id, message.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % now_chat.getMe(message.from_user.first_name))
-            
     elif text == "/allstats" or text == "/allstats@qakickerratingbot":
-        
-        sqlSEL = "SELECT tg_name, scope FROM users ORDER BY scope DESC;"
-        cursor.execute(sqlSEL)
-        scopes_with_names = cursor.fetchall()
-
-        sql = "SELECT name, max_scope FROM grades ORDER BY max_scope ASC"
-        cursor.execute(sql)
-        grades = cursor.fetchall()
-        
-
-        stat = "Рейтинг среди футболёров: \n"
-        for n in scopes_with_names:
-            for i in grades:        
-                if i[1] > n[1]:
-                    stat += '\t\t\t' + str(n[0]) + ', ранг - %s, очков - %s.' % (str(i[0]), n[1]) + '\n'
-                    break       
-        bot.send_message(chat_id, stat)
+        bot.send_message(chat_id, now_chat.getAll())
 
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)

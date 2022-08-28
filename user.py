@@ -34,4 +34,21 @@ class User:
         data = (userName,)
         cursor.execute(sqlSEL, data)
         my_scope = cursor.fetchall()
-        return my_scope
+
+        sql = "SELECT name, max_scope FROM grades ORDER BY max_scope ASC"
+        cursor.execute(sql)
+        grades = cursor.fetchall()
+
+        global rank
+        j = 0
+        for i in grades:
+            if i[1] > my_scope[0][0]:
+                if(j == 0):
+                    j += 1
+                
+                rank = i[0]
+                break
+            else:
+                j += 1
+
+        return rank

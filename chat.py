@@ -68,3 +68,20 @@ class Chat:
     def getMe(self, userName):
          usr = user.User()
          return usr.getScope(userName, self.__cursor)
+    def getAll(self,):
+        usr = user.User()
+        sqlSEL = "SELECT tg_name, scope FROM users ORDER BY scope DESC;"
+        self.__cursor.execute(sqlSEL)
+        scopes_with_names = self.__cursor.fetchall()
+
+        sql = "SELECT name, max_scope FROM grades ORDER BY max_scope ASC"
+        self.__cursor.execute(sql)
+        grades = self.__cursor.fetchall()
+
+        stat = "Рейтинг среди футболёров: \n"
+        for n in scopes_with_names:
+            for i in grades:        
+                if i[1] > n[1]:
+                    stat += '\t\t\t' + str(n[0]) + ', ранг - %s, очков - %s.' % (str(i[0]), n[1]) + '\n'
+                    break       
+        return stat
