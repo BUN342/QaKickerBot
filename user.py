@@ -3,7 +3,7 @@ class User:
     #     self.__tg_name=name
     #     self.__scope=scope
 
-    def setScope(self, newScope, userName, cursor):
+    def setScope(self, side, userName, cursor):
         sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
         data = (userName,)
         cursor.execute(sqlSEL, data)
@@ -14,12 +14,15 @@ class User:
             return False
             bot.send_message(message.chat.id, 'Не от чего отнимать рейтинг')
         elif(coins < 25 and coins >= 0):
-            newScope = 0
+            coins = 0
         else:
-            coins -=25
+            if(side is True):
+                coins +=25
+            else:
+                coins -=25
         
         sqlUPD = "UPDATE users SET scope = %s WHERE tg_name = %s;"
-        data = (newScope, userName)
+        data = (coins, userName)
         cursor.execute(sqlUPD, data)
         return True
 
