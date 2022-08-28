@@ -4,10 +4,13 @@ from collections import defaultdict
 import telebot
 from datetime import datetime, timedelta
 from telebot import types
+import threading
+import chat
 
 TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
  
+chats = {}
 user = 'mdriysdmzxohga'
 password = 'd5016c9242569d17b84950f4d0cb9ba3be135fbdff7d89e09f96785d5845e9a2'
 db_name = 'dbf5g5orv48dsr'
@@ -19,9 +22,16 @@ POOL_TIME_FOR_GAME=5
 conn = psycopg2.connect(dbname=db_name, user=user, 
                         password=password, host=host)
 
+def test_timer(message):
+    bot.send_message(message.chat.id, 'Дарова, хуила')
+
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
+    e1 = threading.Event()
+    t1 = threading.Thread(target=test_timer)
+    t1.start()
+    e1.set()
 
 @bot.message_handler(commands=['help'])
 def help(message):

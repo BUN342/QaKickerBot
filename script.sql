@@ -2,7 +2,7 @@ CREATE TABLE public.users (
 	tg_name varchar NOT NULL,
 	"scope" int4 NULL,
 	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
-	upd_time time NULL,
+	chat_id int8 NULL,
 	CONSTRAINT users_pk PRIMARY KEY (id),
 	CONSTRAINT users_un UNIQUE (tg_name)
 );
