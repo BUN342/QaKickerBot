@@ -48,12 +48,13 @@ class Chat:
             self.__side = 1
 
         return True
-    def writeResult(self,): 
+    def writeResult(self, result): 
         usr = user.User()
-        for player in self.__players:
-            
+        for player in self.__players:         
             usr.setScope(player[1], player[0], self.__cursor)
             self.__connection.commit()
     
-    def gameStart(self,): return
+    def gameStart(self,): 
+        self.__isGameNow = True
+        return
     def gameStop(self,): return
