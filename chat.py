@@ -8,7 +8,7 @@ class Chat:
         self.__connection=connection
         self.__cursor=connection.cursor()
         self.__players={}
-        self.__side = 0
+        self.__side = True
         self.__creatorOfGame = ""
     
     
@@ -22,6 +22,7 @@ class Chat:
             return False
 
     def createGame(self,userName):
+        self.__side = True
         if(self.__isGameNow is True):
             return False
         elif(len(self.__players) != 0):
@@ -29,42 +30,55 @@ class Chat:
 
         self.__creatorOfGame = userName
         self.__players[userName] = self.__side
-        self.__side = 1
         return True
 
     def writeUserToGame(self,userName):
         if(self.__isGameNow is True):
-            return False
-        elif(len(self.__players) == 0 or len(self.__players) >= 4):
-            return False      
+            return 1
+        elif(len(self.__players) >= 4):
+            return 2      
         elif(userName in self.__players):
-            return False
+            return 3
 
         self.__players[userName] = self.__side
 
-        if(self.__side == 1):
-            self.__side = 0
-        else:
-            self.__side = 1
+        if(self.__side is True):
+            self.__side = False
 
         return True
     def writeResult(self, result, userName): 
-        if(self.__isGameNow is True):
-            return False
-
         if(userName != self.__creatorOfGame):
-            return False
+            return 0
+        elif(self.__isGameNow is False):
+            return 1
+        
+        if(result is True):
+            winSide = self.__players[userName]
+        else:
+            winSide = False
 
         usr = user.User()
+
         for player in self.__players:         
-            usr.setScope(result, player[1], player[0], self.__cursor)
+
+            if(player == winSide):
+                usr.setScope(True, player, self.__cursor)
+            else:
+                usr.setScope(False, player, self.__cursor)
             self.__connection.commit()
+        return self.__players
     
     def gameStart(self,): 
         if(len(self.__players) < 2):
-            return False
+            return 1
+        elif(self.__isGameNow is True):
+            return 2
+
         self.__isGameNow = True
     def gameStop(self,): 
+        if(self.__isGameNow is False):
+            return False
+
         self.__isGameNow = False
         self.__players = {}
     def getMe(self, userName):
