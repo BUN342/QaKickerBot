@@ -28,7 +28,7 @@ class Chat:
             return False
 
         self.__creatorOfGame = userName
-        self.__player[userName] = self.__side
+        self.__players[userName] = self.__side
         self.__side = 1
         return True
 
@@ -61,6 +61,8 @@ class Chat:
             self.__connection.commit()
     
     def gameStart(self,): 
+        if(len(self.__players) < 2):
+            return False
         self.__isGameNow = True
     def gameStop(self,): 
         self.__isGameNow = False
