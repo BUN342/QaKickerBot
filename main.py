@@ -91,6 +91,7 @@ def handle_text(message):
     global now_chat
     if(key not in chats):
         now_chat = chat.Chat(conn)
+        chats[key] = now_chat
     else: 
         now_chat = chats[key]
 
