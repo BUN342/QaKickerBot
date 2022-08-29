@@ -53,7 +53,7 @@ def start(message):
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
 
     e1 = threading.Event()
-    t1 = threading.Thread(target=test_timer, args=(message,10))
+    t1 = threading.Thread(target=test_timer, args=(message,300))
     t1.start()
     e1.set()
 
@@ -76,6 +76,9 @@ def footballMsg(message):
      chat_id =  message.chat.id
      bot.send_message(chat_id, "Ага, я что-то услышал про футбол...\nРегайся на на игру командой /game")
 
+@bot.message_handler(content_types=["sticker"])
+def handle_sticker(message):
+     bot.send_sticker(message.chat.id, 'CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE')
 @bot.message_handler(regexp="\/\w+[@\w]*")
 def handle_text(message):
     global isStartPressed
