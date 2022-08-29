@@ -3,7 +3,7 @@ import { nextTick } from 'process';
 import { json } from 'stream/consumers';
 import { Telegraf, Telegram } from 'telegraf'
 import { ExtraDice } from 'telegraf/typings/telegram-types';
-import { DataSource } from 'typeorm';
+import { DataSource, SimpleConsoleLogger } from 'typeorm';
 import { AppDataSource } from './data-source';
 import { User } from './Models/User';
 
@@ -32,10 +32,10 @@ bot.on('dice', (ctx) => {
         )
 
     }
-    console.log(ctx.message.dice.value)
 })
 
 bot.command('registration', async (ctx) => {
+    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE" )
     const user = await User.findOneByOrFail({ telegram_id: ctx.message.from.id })
         .then(() => {
             ctx.reply(`${ctx.message.from.first_name}, ты уже зареган`)
@@ -55,11 +55,13 @@ bot.command('listplayers', async (ctx) => {
     users.forEach((elem, index) => {
         usersToSend += `${index + 1}. ${elem.name} -- ${elem.score} \r\n`
     })
+    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE" )
     console.log(usersToSend)
     //users = JSON.sringify(users)
     usersToSend ? ctx.reply(usersToSend) : ctx.reply("Никто еще не зарегистрировался :с")
 })
 bot.command('mystat', async (ctx) => {
+    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE" )
     let user = await User.findOneByOrFail({ name: ctx.message.from.first_name })
         .then((user) => {
             ctx.reply(`${user.name}, у тебя ${user.score} очков`)
@@ -69,6 +71,7 @@ bot.command('mystat', async (ctx) => {
         })
 })
 bot.command('foodpoll', (ctx) => {
+    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE" )
     ctx.replyWithPoll("Что на обед?", [
         "Мак",
         "Мама мия",
@@ -79,14 +82,21 @@ bot.command('foodpoll', (ctx) => {
     open_period: 600})
 })
 
-// bot.on('text', (ctx) => {
-//     console.log(ctx.message.from.id)
-// })
+bot.on('message', (ctx) => {
+
+    if('text' in ctx.message) {
+        if(ctx.message.text.includes("логи")
+        || ctx.message.text.includes("краш")) {
+            ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE")
+        }
+        
+    }
+})
 const secretPath = `/telegraf/${bot.secretPathComponent()}`
 
 // Set telegram webhook
 // npm install -g localtunnel && lt --port 3000
-bot.telegram.setWebhook(`https://pretty-houses-raise-212-12-20-9.loca.lt${secretPath}`)
+bot.telegram.setWebhook(`https://quiet-boxes-behave-212-12-20-9.loca.lt${secretPath}`)
 const app = express()
 AppDataSource
     .initialize()
