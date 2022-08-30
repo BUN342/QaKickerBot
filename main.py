@@ -35,11 +35,18 @@ def test_timer(message, seconds_left):
 
     global chats
     chats = {}
+    test_timer(message, seconds_left)
+
+def joke_timer(message, seconds_left):
+    total_seconds = seconds_left
+    while total_seconds > 0:
+        time.sleep(1)
+        total_seconds -= 1
     joke = pyjokes.get_joke()
     translator = Translator()
     joke_result = translator.translate(joke, dest='ru')
     bot.send_message(message.chat.id,joke_result.text)
-    test_timer(message, seconds_left)
+    joke_timer(message, seconds_left)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -57,9 +64,16 @@ def start(message):
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
 
     e1 = threading.Event()
-    t1 = threading.Thread(target=test_timer, args=(message,10))
+    e2 = threading.Event()
+    
+    t1 = threading.Thread(target=test_timer, args=(message,300))
+    t2 = threading.Thread(target=test_timer, args=(message,1800))
+
     t1.start()
+    t2.start()
+
     e1.set()
+    e2.set()
 
 @bot.message_handler(commands=['help'])
 def help(message):
