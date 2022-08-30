@@ -48,6 +48,12 @@ def joke_timer(message, seconds_left):
     bot.send_message(message.chat.id,joke_result.text)
     joke_timer(message, seconds_left)
 
+def getJoke(message):
+    joke = pyjokes.get_joke()
+    translator = Translator()
+    joke_result = translator.translate(joke, dest='ru')
+    bot.send_message(message.chat.id,joke_result.text)
+
 @bot.message_handler(commands=['start'])
 def start(message):
     global isStartPressed
@@ -182,6 +188,7 @@ def handle_text(message):
         bot.send_message(chat_id, message.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % now_chat.getMe(message.from_user.first_name))
     elif text == "/allstats" or text == "/allstats@qakickerratingbot":
         bot.send_message(chat_id, now_chat.getAll())
-
+    elif text == "/getjoke" or text == "/getjoke@qakickerratingbot":
+        getJoke(message)
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
