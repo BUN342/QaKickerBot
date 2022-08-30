@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import { User } from "./Models/User";
 import "reflect-metadata"
+import { Chat } from "./Models/Chat";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -10,8 +11,8 @@ export const AppDataSource = new DataSource({
     password: "d5016c9242569d17b84950f4d0cb9ba3be135fbdff7d89e09f96785d5845e9a2",
     database: "dbf5g5orv48dsr",
     synchronize: true,
-    logging: false,
-    entities: [User],
+    logging: true,
+    entities: [User, Chat],
     subscribers: [],
     migrations: [],
     schema: "testjs",

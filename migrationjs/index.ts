@@ -1,10 +1,7 @@
-import express, { Express, Request, Response } from 'express';
-import { nextTick } from 'process';
-import { json } from 'stream/consumers';
-import { Telegraf, Telegram } from 'telegraf'
-import { ExtraDice } from 'telegraf/typings/telegram-types';
-import { DataSource, SimpleConsoleLogger } from 'typeorm';
+import express, { Request, Response } from 'express';
+import { Telegraf } from 'telegraf'
 import { AppDataSource } from './data-source';
+import { Chat } from './Models/Chat';
 import { User } from './Models/User';
 
 const token = "5612645727:AAGJSnks-HY5Wn3Gb7PVSccPnwhlZf6L3eU"
@@ -29,13 +26,37 @@ bot.on('dice', (ctx) => {
                     ctx.reply("Разъебочка тремя топорами")
                 }
             }
-        )
+            )
 
     }
 })
 
+bot.command(('/regchat'), async (ctx) => {
+
+
+    const chat = Chat
+        .findOneByOrFail(
+            {
+                telegramId: ctx.chat.id
+            }
+        )
+        .then(() => ctx.reply("Этот чат уже зареган"))
+        .catch(async () => {
+            const chat = new Chat()
+            chat.telegramId = ctx.chat.id
+            await chat.save()
+            ctx.reply('Чат был успешно зареган')
+        })
+    
+
+})
+
+bot.command(('/gofootball'), async (ctx) => {
+
+})
+
 bot.command('registration', async (ctx) => {
-    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE" )
+    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE")
     const user = await User.findOneByOrFail({ telegram_id: ctx.message.from.id })
         .then(() => {
             ctx.reply(`${ctx.message.from.first_name}, ты уже зареган`)
@@ -55,13 +76,13 @@ bot.command('listplayers', async (ctx) => {
     users.forEach((elem, index) => {
         usersToSend += `${index + 1}. ${elem.name} -- ${elem.score} \r\n`
     })
-    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE" )
+    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE")
     console.log(usersToSend)
     //users = JSON.sringify(users)
     usersToSend ? ctx.reply(usersToSend) : ctx.reply("Никто еще не зарегистрировался :с")
 })
 bot.command('mystat', async (ctx) => {
-    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE" )
+    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE")
     let user = await User.findOneByOrFail({ name: ctx.message.from.first_name })
         .then((user) => {
             ctx.reply(`${user.name}, у тебя ${user.score} очков`)
@@ -71,32 +92,33 @@ bot.command('mystat', async (ctx) => {
         })
 })
 bot.command('foodpoll', (ctx) => {
-    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE" )
+    ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE")
     ctx.replyWithPoll("Что на обед?", [
         "Мак",
         "Мама мия",
         "Тандыр",
         "Доставка",
-        "У кого др"
-    ], {is_anonymous: false,
-    open_period: 600})
+        "У кого др11"
+    ], {
+        is_anonymous: false,
+        open_period: 600
+    })
 })
 
 bot.on('message', (ctx) => {
-
-    if('text' in ctx.message) {
-        if(ctx.message.text.includes("логи")
-        || ctx.message.text.includes("краш")) {
+    if ('text' in ctx.message) {
+        if (ctx.message.text.toLowerCase().includes("логи")
+            || ctx.message.text.toLowerCase().includes("краш")) {
             ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE")
         }
-        
+
     }
 })
 const secretPath = `/telegraf/${bot.secretPathComponent()}`
 
 // Set telegram webhook
 // npm install -g localtunnel && lt --port 3000
-bot.telegram.setWebhook(`https://quiet-boxes-behave-212-12-20-9.loca.lt${secretPath}`)
+bot.telegram.setWebhook(`https://rare-hornets-poke-212-12-20-9.loca.lt${secretPath}`)
 const app = express()
 AppDataSource
     .initialize()
