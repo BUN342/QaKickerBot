@@ -7,10 +7,11 @@ from datetime import datetime, timedelta
 from telebot import types
 import threading
 import chat
-import registration
+import pyjokes
+from googletrans import Translator
 
-#TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
-TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
+TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
+#TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
  
 chats = {}
@@ -34,7 +35,10 @@ def test_timer(message, seconds_left):
 
     global chats
     chats = {}
-    bot.send_message(message.chat.id, 'Сканирование чата...')
+    joke = pyjokes.get_joke()
+    translator = Translator()
+    joke_result = translator.translate(joke, dest='ru')
+    bot.send_message(message.chat.id,joke_result.text)
     test_timer(message, seconds_left)
 
 @bot.message_handler(commands=['start'])
@@ -53,7 +57,7 @@ def start(message):
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
 
     e1 = threading.Event()
-    t1 = threading.Thread(target=test_timer, args=(message,300))
+    t1 = threading.Thread(target=test_timer, args=(message,10))
     t1.start()
     e1.set()
 
