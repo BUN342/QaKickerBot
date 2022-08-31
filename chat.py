@@ -69,7 +69,7 @@ class Chat:
         return self.__players
     
     def gameStart(self,): 
-        if(len(self.__players) < 2):
+        if(len(self.__players) < 4):
             return 1
         elif(self.__isGameNow is True):
             return 2
