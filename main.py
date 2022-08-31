@@ -53,7 +53,7 @@ def getJoke(message):
     joke = pyjokes.get_joke()
     translator = Translator()
     #joke_result = translator.translate(joke, dest='ru')
-    bot.send_message(message.chat.id, joke_result.text)
+    bot.send_message(message.chat.id, joke)
 
 @bot.message_handler(commands=['start'])
 def start(message):
