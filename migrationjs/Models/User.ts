@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Match } from "./Match";
 
 @Entity()
 export class User extends BaseEntity {
@@ -14,6 +15,15 @@ export class User extends BaseEntity {
 
     @Column({nullable: true,
     default: 0})
-    score!: number
+    score?: number
+
+    @Column({
+        default: false
+    })
+    isInMatch!: boolean
+
+    @ManyToMany(() => Match)
+    @JoinTable()
+    matches?: Match[]
 
 }

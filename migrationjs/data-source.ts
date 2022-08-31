@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import { User } from "./Models/User";
 import "reflect-metadata"
 import { Chat } from "./Models/Chat";
+import { Match } from "./Models/Match";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -12,7 +13,7 @@ export const AppDataSource = new DataSource({
     database: "dbf5g5orv48dsr",
     synchronize: true,
     logging: true,
-    entities: [User, Chat],
+    entities: [User, Match, Chat],
     subscribers: [],
     migrations: [],
     schema: "testjs",

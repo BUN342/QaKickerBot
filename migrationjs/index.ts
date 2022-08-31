@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { Telegraf } from 'telegraf'
 import { AppDataSource } from './data-source';
 import { Chat } from './Models/Chat';
+import { Match } from './Models/Match';
 import { User } from './Models/User';
 
 const token = "5612645727:AAGJSnks-HY5Wn3Gb7PVSccPnwhlZf6L3eU"
@@ -11,7 +12,7 @@ if (token === undefined) {
 
 const bot = new Telegraf(token)
 // Set the bot response
-//bot.on('text', (ctx) => ctx.replyWithHTML('<b>Hello</b>'))
+//bot.on('text', (ctx) => ctx.replyWithHTM('<b>Hello</b>'))
 
 bot.on('dice', (ctx) => {
     if (ctx.message.dice.emoji == "🎲" && ctx.message.dice.value == 6) {
@@ -33,7 +34,6 @@ bot.on('dice', (ctx) => {
 
 bot.command(('/regchat'), async (ctx) => {
 
-
     const chat = Chat
         .findOneByOrFail(
             {
@@ -47,11 +47,53 @@ bot.command(('/regchat'), async (ctx) => {
             await chat.save()
             ctx.reply('Чат был успешно зареган')
         })
-    
+
 
 })
 
+bot.command('/test', (ctx) => {
+    ctx.replyWithMarkdown("one, two", {reply_markup: {keyboard: [['ASD', 'QWE']]}})
+})
+
 bot.command(('/gofootball'), async (ctx) => {
+
+    ctx.reply
+    const chat = Chat
+        .findOneByOrFail({
+            telegramId: ctx.chat.id
+        })
+        .then(async (chat) => {
+
+            if(chat.isInGame){
+                ctx.reply("Игра уже создана")
+                return
+            }
+
+            chat.isInGame = true
+            await chat.save()
+
+            const user = User
+                .findOneOrFail({
+                    relations: ['matches'],
+                    where: {
+                        telegram_id: ctx.message.from.id
+                    }
+                }, )
+                .then(async (user) => {
+                      
+                    user.isInMatch=true
+                    const match = new Match()
+                    await match.save()
+                    user.matches?.push(match)
+                    console.log("user matches are " + user.matches)
+                    
+                    await user.save()
+                    ctx.reply('Ты добавился в матч')
+                })
+        })
+        .catch(() => {
+            ctx.reply("Этот чат еще не зареган, пж зарегайте чат командой /regchat")
+        })
 
 })
 
@@ -78,7 +120,7 @@ bot.command('listplayers', async (ctx) => {
     })
     ctx.replyWithSticker("CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE")
     console.log(usersToSend)
-    //users = JSON.sringify(users)
+    //users = JSON.sringify(usersa)
     usersToSend ? ctx.reply(usersToSend) : ctx.reply("Никто еще не зарегистрировался :с")
 })
 bot.command('mystat', async (ctx) => {
@@ -118,7 +160,7 @@ const secretPath = `/telegraf/${bot.secretPathComponent()}`
 
 // Set telegram webhook
 // npm install -g localtunnel && lt --port 3000
-bot.telegram.setWebhook(`https://rare-hornets-poke-212-12-20-9.loca.lt${secretPath}`)
+bot.telegram.setWebhook(`https://slimy-weeks-crash-212-12-20-9.loca.lt${secretPath}`)
 const app = express()
 AppDataSource
     .initialize()
