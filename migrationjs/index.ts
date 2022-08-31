@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Telegraf } from 'telegraf'
+import { inlineKeyboard } from 'telegraf/typings/markup';
 import { AppDataSource } from './data-source';
 import { Chat } from './Models/Chat';
 import { Match } from './Models/Match';
@@ -52,7 +53,32 @@ bot.command(('/regchat'), async (ctx) => {
 })
 
 bot.command('/test', (ctx) => {
-    ctx.replyWithMarkdown("one, two", {reply_markup: {keyboard: [['ASD', 'QWE']]}})
+    //ctx.replyWithMarkdown("one, two", {reply_markup: {keyboard: [['ASD', 'QWE']]}})
+    ctx.replyWithMarkdown("mad", {
+        reply_markup: {
+            inline_keyboard: [[
+                {
+                    text: "option 1",
+                    callback_data: "3:1"
+                }
+            ]]
+        }
+    })
+    
+
+})
+
+bot.on('callback_query', (ctx) => {
+    console.log(ctx.callbackQuery.data)
+    // ctx.answerInlineQuery([{
+    //     title: "my ass",
+    //     type: 'article',
+    //     id: 'asd',
+    //     input_message_content: {
+    //         message_text: "kintint"
+    //     }
+
+    // }])
 })
 
 bot.command(('/gofootball'), async (ctx) => {
@@ -160,7 +186,7 @@ const secretPath = `/telegraf/${bot.secretPathComponent()}`
 
 // Set telegram webhook
 // npm install -g localtunnel && lt --port 3000
-bot.telegram.setWebhook(`https://slimy-weeks-crash-212-12-20-9.loca.lt${secretPath}`)
+bot.telegram.setWebhook(`https://shy-paws-count-37-145-42-157.loca.lt${secretPath}`)
 const app = express()
 AppDataSource
     .initialize()
