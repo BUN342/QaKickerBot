@@ -161,7 +161,7 @@ def handle_text(message):
         bot.send_message(chat_id, 'Игра началась!')
     elif text == "/gamestop" or text == "/gamestop@qakickerratingbot":
         isGameStop = now_chat.gameStop()
-        if(isGameStop == 1):
+        if (isGameStop == 1):
             bot.send_message(chat_id, 'Игра даже не началась, отменять нечего.')
             return
         elif (isGameStop == 2):

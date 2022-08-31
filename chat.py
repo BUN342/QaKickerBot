@@ -84,7 +84,7 @@ class Chat:
             return 2
         elif(self.__isGameNow is False): 
             return 1
-
+#1
         self.__isGameNow = False
         self.__players = {}
     def getMe(self, userName):
