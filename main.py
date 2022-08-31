@@ -45,8 +45,8 @@ def joke_timer(message, seconds_left):
         total_seconds -= 1
     joke = pyjokes.get_joke()
     translator = Translator()
-    joke_result = translator.translate(joke, dest='ru')
-    bot.send_message(message.chat.id,joke_result.text)
+    #joke_result = translator.translate(joke, dest='ru')
+    bot.send_message(message.chat.id,joke)
     joke_timer(message, seconds_left)
 
 def getJoke(message):
