@@ -52,7 +52,8 @@ def getJoke(message):
     joke = pyjokes.get_joke()
     translator = Translator()
     joke_result = translator.translate(joke, dest='ru')
-    bot.send_message(message.chat.id,joke_result.text)
+    bot.send_message(message.chat.id, joke_result.text + "\n")
+    bot.send_message(message.chat.id, "В оригинале звучит так - " + joke.text)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -88,7 +89,7 @@ def help(message):
         bot.send_message(message.chat.id, 'Запусти бота, чорт')
         return
 
-    bot.send_message(message.chat.id, 'Вот, чем я могу помочь тебе:\n /reg - регистрация;\n /game - начать игру;\n /allstats - общая статистика;\n /mystat - твоя статистика.')
+    bot.send_message(message.chat.id, 'Вот, чем я могу помочь тебе:\n /reg - регистрация в рейтинге;\n /game - начать игру;\n /allstats - общая статистика;\n /mystat - персональная статистика\n /gamestart - начать игру, если нашлось 4 игрока;\n /gamestop - прервать игру, если все воркают и не набралось игроков или кикер занят;\n /win - это пишет создатель игры, если его команда победила;\n /lose - это пишет создатель игры, если его команда проиграла;\n /getjoke - получить топовый анекдот')
 
 @bot.message_handler(regexp="\w*\s*ф\w*\s*у\w*\s*т\w*\s*б\w*\s*о\w*\s*л")
 def footballMsg(message):
