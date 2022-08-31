@@ -79,9 +79,11 @@ class Chat:
         if(self.__isGameNow is False and len(self.__players) > 0):
             self.__players = {}
             self.__isGameNow = False
-            return True
+            return 3
+        elif (self.__isGameNow is False and len(self.__players) == 0):
+            return 2
         elif(self.__isGameNow is False): 
-            return False
+            return 1
 
         self.__isGameNow = False
         self.__players = {}
