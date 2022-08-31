@@ -10,6 +10,7 @@ import chat
 import pyjokes
 from googletrans import Translator
 
+#123
 #TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
 TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
@@ -52,8 +53,7 @@ def getJoke(message):
     joke = pyjokes.get_joke()
     translator = Translator()
     joke_result = translator.translate(joke, dest='ru')
-    bot.send_message(message.chat.id, joke_result.text + "\n")
-    bot.send_message(message.chat.id, "В оригинале звучит так - " + joke.text)
+    bot.send_message(message.chat.id, joke_result.text)
 
 @bot.message_handler(commands=['start'])
 def start(message):
