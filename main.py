@@ -8,7 +8,6 @@ from telebot import types
 import threading
 import chat
 import pyjokes
-from googletrans import Translator
 
 #123
 #TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
