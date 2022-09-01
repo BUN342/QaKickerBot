@@ -23,6 +23,7 @@ class Chat:
             return False
 
     def createGame(self,userName):
+        self.__regBegin=True
         self.__side = True
         if(self.__isGameNow is True):
             return False
