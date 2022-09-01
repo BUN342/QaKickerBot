@@ -39,7 +39,7 @@ class Chat:
             return 2      
         elif(userName in self.__players):
             return 3
-        elif(self.__isGameNow is True and len(self.__players) == 0):
+        elif(self.__isGameNow is False):
             return 4
 
         self.__players[userName] = self.__side
