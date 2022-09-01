@@ -8,10 +8,9 @@ from telebot import types
 import threading
 import chat
 import pyjokes
-from googletrans import Translator
 
-TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
-#TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
+#TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
+TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
  
 chats = {}
@@ -43,9 +42,7 @@ def joke_timer(message, seconds_left):
         time.sleep(1)
         total_seconds -= 1
     joke = pyjokes.get_joke()
-    translator = Translator()
-    joke_result = translator.translate(joke, dest='ru')
-    bot.send_message(message.chat.id,joke_result.text)
+    bot.send_message(message.chat.id,joke)
     joke_timer(message, seconds_left)
 
 @bot.message_handler(commands=['start'])
