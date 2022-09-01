@@ -5,6 +5,7 @@ class Chat:
     def __init__(self, connection):
         #self.__chatId=chatId
         self.__isGameNow=False
+        self.__regBegin=False
         self.__connection=connection
         self.__cursor=connection.cursor()
         self.__players={}
@@ -27,18 +28,20 @@ class Chat:
             return False
         elif(len(self.__players) != 0):
             return False
-
+        self.__regBegin=True
         self.__creatorOfGame = userName
         self.__players[userName] = self.__side
         return True
 
     def writeUserToGame(self,userName):
-        if(self.__isGameNow is True):
+        if(self.__isGameNow is True and len(self.__players) >= 4):
             return 1
-        elif(len(self.__players) >= 4):
-            return 2      
+        # elif(len(self.__players) >= 4):
+        #     return 2      
         elif(userName in self.__players):
             return 3
+        elif(self.__regBegin is False):
+            return 4
 
         self.__players[userName] = self.__side
 
@@ -69,7 +72,7 @@ class Chat:
         return self.__players
     
     def gameStart(self,): 
-        if(len(self.__players) < 2):
+        if(len(self.__players) < 4):
             return 1
         elif(self.__isGameNow is True):
             return 2
@@ -79,12 +82,15 @@ class Chat:
         if(self.__isGameNow is False and len(self.__players) > 0):
             self.__players = {}
             self.__isGameNow = False
-            return True
+            return 3
+        elif (self.__isGameNow is False and len(self.__players) == 0):
+            return 2
         elif(self.__isGameNow is False): 
-            return False
-
+            return 1
+#1
         self.__isGameNow = False
         self.__players = {}
+        self.__regBegin=False
     def getMe(self, userName):
          usr = user.User()
          return usr.getScope(userName, self.__cursor)
