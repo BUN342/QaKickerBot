@@ -79,8 +79,8 @@ class Chat:
     def gameStart(self,userName): 
         if(self.__regBegin is True and userName != self.__creatorOfGame):
             return 0
-        # elif(len(self.__players) < 2):
-        #     return 1
+        elif(len(self.__players) < 2):
+            return 1
         elif(self.__isGameNow is True):
             return 2
 
