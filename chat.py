@@ -85,7 +85,7 @@ class Chat:
             return 2
 
         self.__isGameNow = True
-        return 200
+        return self.__players
 
     def gameStop(self,userName): 
         if(self.__regBegin is True and userName != self.__creatorOfGame):

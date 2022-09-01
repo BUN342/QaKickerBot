@@ -155,7 +155,19 @@ def handle_text(message):
         elif(isGameStart == 2):
             bot.send_message(chat_id, 'Идёт игра, жди очереди.')
             return
-        bot.send_message(chat_id, 'Игра началась!')
+
+        players = isGameStart
+
+        teams = "Наши команды:\n"
+        team = list(players.items())
+
+        if(len(team) == 2):
+            teams += team[0][0] + " и " + team[1][0]
+        elif(len(team) == 4):
+            team = list(players.items())
+            teams += team[0][0] + " и " + team[1][0] + ",\n" + team[2][0] + " и " + team[3][0]
+            
+        bot.send_message(chat_id,teams + "\nИгра началась!")
     elif text == "/gamestop" or text == "/gamestop@qakickerratingbot":
         isGameStop = now_chat.gameStop(message.from_user.first_name)
         if(isGameStop == 0):
