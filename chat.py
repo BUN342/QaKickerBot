@@ -72,26 +72,35 @@ class Chat:
             self.__connection.commit()
         return self.__players
     
-    def gameStart(self,): 
-        if(len(self.__players) < 2):
+    def gameStart(self,userName): 
+        if(userName != self.__creatorOfGame):
+            return 0
+        elif(len(self.__players) < 2):
             return 1
         elif(self.__isGameNow is True):
             return 2
 
         self.__isGameNow = True
-    def gameStop(self,): 
-        if(self.__isGameNow is False and len(self.__players) > 0):
+        return 200
+
+    def gameStop(self,userName): 
+        if(userName != self.__creatorOfGame):
+            return 0
+        elif(len(self.__players) > 0):
             self.__players = {}
             self.__isGameNow = False
+            self.__regBegin = False
             return 3
-        elif (self.__isGameNow is False and len(self.__players) == 0):
+        elif (len(self.__players) == 0):
             return 2
         elif(self.__isGameNow is False): 
+            self.__players = {}
             return 1
 #1
         self.__isGameNow = False
         self.__players = {}
-        self.__regBegin=False
+        self.__regBegin = False
+        
     def getMe(self, userName):
          usr = user.User()
          return usr.getScope(userName, self.__cursor)

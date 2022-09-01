@@ -145,8 +145,11 @@ def handle_text(message):
             bot.send_message(chat_id, '%s, ты записался. \nЕсли все готовы, то пишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.' % message.from_user.first_name)
 
     elif text == "/gamestart" or text == "/gamestart@qakickerratingbot":
-        isGameStart = now_chat.gameStart()
-        if(isGameStart == 1):
+        isGameStart = now_chat.gameStart(message.from_user.first_name)
+        if(isGameStart == 0):
+            bot.send_message(chat_id, 'Ты не создатель игры, иди лесом.')
+            return
+        elif(isGameStart == 1):
             bot.send_message(chat_id, 'Слишком мало игроков для игры.')
             return
         elif(isGameStart == 2):
@@ -154,8 +157,11 @@ def handle_text(message):
             return
         bot.send_message(chat_id, 'Игра началась!')
     elif text == "/gamestop" or text == "/gamestop@qakickerratingbot":
-        isGameStop = now_chat.gameStop()
-        if (isGameStop == 1):
+        isGameStop = now_chat.gameStop(message.from_user.first_name)
+        if(isGameStop == 0):
+            bot.send_message(chat_id, 'Ты не создатель игры, иди лесом.')
+            return
+        elif (isGameStop == 1):
             bot.send_message(chat_id, 'Игра даже не началась, отменять нечего.')
             return
         elif (isGameStop == 2):
