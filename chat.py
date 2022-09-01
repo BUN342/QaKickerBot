@@ -23,12 +23,12 @@ class Chat:
             return False
 
     def createGame(self,userName):
+        self.__regBegin=True
         self.__side = True
         if(self.__isGameNow is True):
             return False
         elif(len(self.__players) != 0):
-            return False
-        self.__regBegin=True
+            return False        
         self.__creatorOfGame = userName
         self.__players[userName] = self.__side
         return True
