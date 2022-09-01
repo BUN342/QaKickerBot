@@ -38,7 +38,7 @@ def test_timer(message, seconds_left):
     chats = {}
     # bot.send_message(message.chat.id, '@Yuriy')
     # bot.send_sticker(message.chat.id, 'CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE')
-    # test_timer(message, seconds_left)
+    test_timer(message, seconds_left)
 
 @bot.message_handler(commands=['start'])
 def start(message):
