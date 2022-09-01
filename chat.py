@@ -70,10 +70,12 @@ class Chat:
             else:
                 usr.setScope(False, player, self.__cursor)
             self.__connection.commit()
+            
+        self.__regBegin = False    
         return self.__players
     
     def gameStart(self,userName): 
-        if(userName != self.__creatorOfGame):
+        if(self.__regBegin is True and userName != self.__creatorOfGame):
             return 0
         elif(len(self.__players) < 2):
             return 1
@@ -84,7 +86,7 @@ class Chat:
         return 200
 
     def gameStop(self,userName): 
-        if(userName != self.__creatorOfGame):
+        if(self.__regBegin is True and userName != self.__creatorOfGame):
             return 0
         elif(len(self.__players) > 0):
             self.__players = {}
@@ -100,7 +102,7 @@ class Chat:
         self.__isGameNow = False
         self.__players = {}
         self.__regBegin = False
-        
+
     def getMe(self, userName):
          usr = user.User()
          return usr.getScope(userName, self.__cursor)
