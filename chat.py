@@ -36,8 +36,8 @@ class Chat:
     def writeUserToGame(self,userName):
         if(self.__isGameNow is True and len(self.__players) >= 4):
             return 1
-        # elif(len(self.__players) >= 4):
-        #     return 2      
+        elif(len(self.__players) >= 4):
+            return 2      
         elif(userName in self.__players):
             return 3
         elif(self.__regBegin is False):
@@ -48,7 +48,7 @@ class Chat:
         if(self.__side is True):
             self.__side = False
 
-        return 4
+        return 5
     def writeResult(self, result, userName): 
         if(userName != self.__creatorOfGame):
             return 0
