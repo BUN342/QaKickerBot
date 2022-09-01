@@ -34,8 +34,9 @@ def test_timer(message, seconds_left):
 
     global chats
     chats = {}
-    bot.send_sticker(message.chat.id, 'CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE')
-    test_timer(message, seconds_left)
+    # bot.send_message(message.chat.id, '@Yuriy')
+    # bot.send_sticker(message.chat.id, 'CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE')
+    # test_timer(message, seconds_left)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -53,7 +54,7 @@ def start(message):
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
 
     e1 = threading.Event()
-    t1 = threading.Thread(target=test_timer, args=(message,300))
+    t1 = threading.Thread(target=test_timer, args=(message,10))
     t1.start()
     e1.set()
 
