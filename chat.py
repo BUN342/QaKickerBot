@@ -5,6 +5,7 @@ class Chat:
     def __init__(self, connection):
         #self.__chatId=chatId
         self.__isGameNow=False
+        self.__regBegin=False
         self.__connection=connection
         self.__cursor=connection.cursor()
         self.__players={}
@@ -27,7 +28,7 @@ class Chat:
             return False
         elif(len(self.__players) != 0):
             return False
-
+        self.__regBegin=True
         self.__creatorOfGame = userName
         self.__players[userName] = self.__side
         return True
@@ -39,7 +40,7 @@ class Chat:
         #     return 2      
         elif(userName in self.__players):
             return 3
-        elif(self.__isGameNow is False):
+        elif(self.__regBegin is True):
             return 4
 
         self.__players[userName] = self.__side
@@ -89,6 +90,7 @@ class Chat:
 #1
         self.__isGameNow = False
         self.__players = {}
+        self.__regBegin=False
     def getMe(self, userName):
          usr = user.User()
          return usr.getScope(userName, self.__cursor)
