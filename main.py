@@ -65,7 +65,7 @@ def start(message):
     e1 = threading.Event()
     e2 = threading.Event()
     
-    t1 = threading.Thread(target=test_timer, args=(message,300))
+    t1 = threading.Thread(target=test_timer, args=(message,1800))
     t2 = threading.Thread(target=test_timer, args=(message,1800))
 
     t1.start()
@@ -81,7 +81,7 @@ def help(message):
         bot.send_message(message.chat.id, 'Запусти бота, чорт')
         return
 
-    bot.send_message(message.chat.id, 'Вот, чем я могу помочь тебе:\n /reg - регистрация в рейтинге;\n /game - начать игру;\n /allstats - общая статистика;\n /mystat - персональная статистика\n /gamestart - начать игру, если нашлось 4 игрока;\n /gamestop - прервать игру, если все воркают и не набралось игроков или кикер занят;\n /win - это пишет создатель игры, если его команда победила;\n /lose - это пишет создатель игры, если его команда проиграла;\n /getjoke - получить топовый анекдот')
+    bot.send_message(message.chat.id, 'Вот, чем я могу помочь тебе:\n /reg - регистрация в рейтинге;\n /game - начать игру;\n /allstats - общая статистика;\n /mystat - персональная статистика\n /gamestart - начать игру, если нашлось 4 игрока;\n /gamestop - прервать игру, если все воркают и не набралось игроков или кикер занят;\n /win - это пишет создатель игры, если его команда победила;\n /lose - это пишет создатель игры, если его команда проиграла;\n /getjoke - получить хохму на не нашем языке')
 
 @bot.message_handler(regexp="\w*\s*ф\w*\s*у\w*\s*т\w*\s*б\w*\s*о\w*\s*л")
 def footballMsg(message):
@@ -93,9 +93,9 @@ def footballMsg(message):
      chat_id =  message.chat.id
      bot.send_message(chat_id, "Ага, я что-то услышал про футбол...\nРегайся на на игру командой /game")
 
-@bot.message_handler(content_types=["sticker"])
-def handle_sticker(message):
-     bot.send_sticker(message.chat.id, 'CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE')
+# @bot.message_handler(content_types=["sticker"])
+# def handle_sticker(message):
+#      bot.send_sticker(message.chat.id, 'CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE')
 @bot.message_handler(regexp="\/\w+[@\w]*")
 def handle_text(message):
     global isStartPressed
