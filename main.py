@@ -180,6 +180,7 @@ def handle_text(message):
     elif text == "/allstats" or text == "/allstats@qakickerratingbot":
         bot.send_message(chat_id, now_chat.getAll())
     elif text == "/getjoke" or text == "/getjoke@qakickerratingbot":
-        getJoke(message)
+        joke = pyjokes.get_joke()
+        bot.send_message(message.chat.id,joke)
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
