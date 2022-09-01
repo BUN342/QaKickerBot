@@ -7,8 +7,10 @@ from datetime import datetime, timedelta
 from telebot import types
 import threading
 import chat
-import registration
+import pyjokes
+from googletrans import Translator
 
+#123
 #TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
 TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
@@ -54,9 +56,16 @@ def start(message):
     bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
 
     e1 = threading.Event()
-    t1 = threading.Thread(target=test_timer, args=(message,10))
+    e2 = threading.Event()
+    
+    t1 = threading.Thread(target=test_timer, args=(message,300))
+    t2 = threading.Thread(target=test_timer, args=(message,1800))
+
     t1.start()
+    t2.start()
+
     e1.set()
+    e2.set()
 
 @bot.message_handler(commands=['help'])
 def help(message):
@@ -65,7 +74,7 @@ def help(message):
         bot.send_message(message.chat.id, 'Запусти бота, чорт')
         return
 
-    bot.send_message(message.chat.id, 'Вот, чем я могу помочь тебе:\n /reg - регистрация;\n /game - начать игру;\n /allstats - общая статистика;\n /mystat - твоя статистика.')
+    bot.send_message(message.chat.id, 'Вот, чем я могу помочь тебе:\n /reg - регистрация в рейтинге;\n /game - начать игру;\n /allstats - общая статистика;\n /mystat - персональная статистика\n /gamestart - начать игру, если нашлось 4 игрока;\n /gamestop - прервать игру, если все воркают и не набралось игроков или кикер занят;\n /win - это пишет создатель игры, если его команда победила;\n /lose - это пишет создатель игры, если его команда проиграла;\n /getjoke - получить топовый анекдот')
 
 @bot.message_handler(regexp="\w*\s*ф\w*\s*у\w*\s*т\w*\s*б\w*\s*о\w*\s*л")
 def footballMsg(message):
@@ -122,6 +131,8 @@ def handle_text(message):
             bot.send_message(chat_id, 'Игроков уже достаточно.')
         elif(isMe == 3):
             bot.send_message(chat_id, 'Ты уже в игре, дай другим записаться.')
+        elif(isMe == 4):
+            bot.send_message(chat_id, 'И куда ты регаться пытаешься?')
         else:
             #bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.')
             bot.send_message(chat_id, '%s, ты записался. \nЕсли все готовы, то пишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.' % message.from_user.first_name)
@@ -137,10 +148,13 @@ def handle_text(message):
         bot.send_message(chat_id, 'Игра началась!')
     elif text == "/gamestop" or text == "/gamestop@qakickerratingbot":
         isGameStop = now_chat.gameStop()
-        if(isGameStop is False):
+        if (isGameStop == 1):
             bot.send_message(chat_id, 'Игра даже не началась, отменять нечего.')
             return
-        bot.send_message(chat_id, 'Игра отменена.')
+        elif (isGameStop == 2):
+            bot.send_message(chat_id, 'Отменять нечего.')
+        elif (isGameStop == 3):
+            bot.send_message(chat_id, 'Игра отменена.')
     elif text == "/win" or text == "/win@qakickerratingbot":
         isResult = now_chat.writeResult(True, message.from_user.first_name)
         if(isResult == 0):
@@ -165,6 +179,7 @@ def handle_text(message):
         bot.send_message(chat_id, message.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % now_chat.getMe(message.from_user.first_name))
     elif text == "/allstats" or text == "/allstats@qakickerratingbot":
         bot.send_message(chat_id, now_chat.getAll())
-
+    elif text == "/getjoke" or text == "/getjoke@qakickerratingbot":
+        getJoke(message)
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
