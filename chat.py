@@ -51,15 +51,18 @@ class Chat:
 
         return 5
     def writeResult(self, result, userName): 
-        if(userName != self.__creatorOfGame):
+        if((self.__isGameNow is True or self.__regBegin is True) and userName != self.__creatorOfGame):
             return 0
-        elif(self.__isGameNow is False):
+        elif(self.__isGameNow is False or self.__regBegin is False):
             return 1
         
         if(result is True):
             winSide = self.__players[userName]
         else:
-            winSide = False
+            if(self.__players[userName] is True):
+                winSide = False
+            else:
+                winSide = True
 
         usr = user.User()
 
@@ -70,7 +73,7 @@ class Chat:
             else:
                 usr.setScope(False, player, self.__cursor)
             self.__connection.commit()
-            
+
         self.__regBegin = False    
         return self.__players
     
