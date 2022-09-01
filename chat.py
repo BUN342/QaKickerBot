@@ -66,9 +66,8 @@ class Chat:
 
         usr = user.User()
 
-        for player in self.__players:         
-
-            if(player == winSide):
+        for player in self.__players:
+            if(self.__players[player] == winSide):
                 usr.setScope(True, player, self.__cursor)
             else:
                 usr.setScope(False, player, self.__cursor)
@@ -80,8 +79,8 @@ class Chat:
     def gameStart(self,userName): 
         if(self.__regBegin is True and userName != self.__creatorOfGame):
             return 0
-        elif(len(self.__players) < 2):
-            return 1
+        # elif(len(self.__players) < 2):
+        #     return 1
         elif(self.__isGameNow is True):
             return 2
 
