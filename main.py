@@ -146,6 +146,8 @@ def handle_text(message):
             bot.send_message(chat_id, 'Игроков уже достаточно.')
         elif(isMe == 3):
             bot.send_message(chat_id, 'Ты уже в игре, дай другим записаться.')
+        elif(isMe == 4):
+            bot.send_message(chat_id, 'И куда ты регаться пытаешься?')
         else:
             #bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.')
             bot.send_message(chat_id, '%s, ты записался. \nЕсли все готовы, то пишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.' % message.from_user.first_name)
