@@ -36,24 +36,9 @@ def test_timer(message, seconds_left):
 
     global chats
     chats = {}
+    # bot.send_message(message.chat.id, '@Yuriy')
+    # bot.send_sticker(message.chat.id, 'CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE')
     test_timer(message, seconds_left)
-
-def joke_timer(message, seconds_left):
-    total_seconds = seconds_left
-    while total_seconds > 0:
-        time.sleep(1)
-        total_seconds -= 1
-    joke = pyjokes.get_joke()
-    translator = Translator()
-    #joke_result = translator.translate(joke, dest='ru')
-    bot.send_message(message.chat.id,joke)
-    joke_timer(message, seconds_left)
-
-def getJoke(message):
-    joke = pyjokes.get_joke()
-    translator = Translator()
-    #joke_result = translator.translate(joke, dest='ru')
-    bot.send_message(message.chat.id, joke)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -195,6 +180,7 @@ def handle_text(message):
     elif text == "/allstats" or text == "/allstats@qakickerratingbot":
         bot.send_message(chat_id, now_chat.getAll())
     elif text == "/getjoke" or text == "/getjoke@qakickerratingbot":
-        getJoke(message)
+        joke = pyjokes.get_joke()
+        bot.send_message(message.chat.id,joke)
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
