@@ -8,6 +8,7 @@ from telebot import types
 import threading
 import chat
 import pyjokes
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 #TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
 TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
@@ -38,14 +39,27 @@ def test_timer(message, seconds_left):
     # bot.send_sticker(message.chat.id, 'CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE')
     test_timer(message, seconds_left)
 
-def joke_timer(message, seconds_left):
-    total_seconds = seconds_left
-    while total_seconds > 0:
-        time.sleep(1)
-        total_seconds -= 1
+def gen_markup():
+    markup = InlineKeyboardMarkup()
+    markup.row_width = 2
+    markup.add(InlineKeyboardButton("Создать игру", callback_data="create_game"),
+                               InlineKeyboardButton("Вывести общую статистику", callback_data="allstat"),
+                               InlineKeyboardButton("Вывести мою статистику", callback_data="mystat"),
+                               InlineKeyboardButton("Шутка дня", callback_data="top_joke"))
+    return markup
+
+def getJokeFunction(message):
     joke = pyjokes.get_joke()
     bot.send_message(message.chat.id,joke)
-    joke_timer(message, seconds_left)
+    bot.send_message(message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
+
+def createGameFunction(now_chat, message):
+    isGame = now_chat.createGame(message.from_user.first_name)
+    if(isGame is False):
+        bot.send_message(message.chat.id, 'Игру уже кто-то начал.\nЗаверши предыдущую, прежде чем начать новую.\nКомианда /gamestop')
+        return
+
+    bot.send_message(message.chat.id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников, пиши /me, если хочешь присоединиться к игре.' % message.from_user.first_name)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -59,20 +73,14 @@ def start(message):
     now_chat = chat.Chat(conn)
     global chats
     chats[message.chat.id] = now_chat
-
-    bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')
+    #bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')    
 
     e1 = threading.Event()
-    e2 = threading.Event()
-    
     t1 = threading.Thread(target=test_timer, args=(message,1800))
-    t2 = threading.Thread(target=test_timer, args=(message,1800))
-
     t1.start()
-    t2.start()
-
     e1.set()
-    e2.set()
+
+    bot.send_message(message.chat.id, "Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.", reply_markup=gen_markup())
 
 @bot.message_handler(commands=['help'])
 def help(message):
@@ -96,6 +104,24 @@ def footballMsg(message):
 # @bot.message_handler(content_types=["sticker"])
 # def handle_sticker(message):
 #      bot.send_sticker(message.chat.id, 'CAACAgIAAx0CaHeRXAACGkVjDHTIvjP2EMLWCFJ3I6gfDV8V_gAC0RYAAjqeIEkTD5Q3eXcgCikE')
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    message = call.message
+
+    now_chat = chats[message.chat.id]
+
+    if call.data == "mystat": 
+        bot.send_message(call.message.chat.id, call.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % now_chat.getMe(call.from_user.first_name))
+        bot.send_message(message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
+    elif call.data == "allstat":
+        bot.send_message(call.message.chat.id, now_chat.getAll())
+        bot.send_message(message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
+    elif call.data == "create_game":
+        createGameFunction(now_chat, call.message)
+    elif call.data == "top_joke":
+        getJokeFunction(call.message)
+
 @bot.message_handler(regexp="\/\w+[@\w]*")
 def handle_text(message):
     global isStartPressed
@@ -123,12 +149,7 @@ def handle_text(message):
         else:
             bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
     elif text == "/game" or text == "/game@qakickerratingbot":
-        isGame = now_chat.createGame(message.from_user.first_name)
-        if(isGame is False):
-            bot.send_message(chat_id, 'Игру уже кто-то начал.\nЗаверши предыдущую, прежде чем начать новую.\nКомианда /gamestop')
-            return
-
-        bot.send_message(chat_id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников, пиши /me, если хочешь присоединиться к игре.' % message.from_user.first_name)
+        createGameFunction(message)
         
     elif text == "/me" or text == "/me@qakickerratingbot":
         isMe = now_chat.writeUserToGame(message.from_user.first_name)
@@ -205,7 +226,6 @@ def handle_text(message):
     elif text == "/allstats" or text == "/allstats@qakickerratingbot":
         bot.send_message(chat_id, now_chat.getAll())
     elif text == "/getjoke" or text == "/getjoke@qakickerratingbot":
-        joke = pyjokes.get_joke()
-        bot.send_message(message.chat.id,joke)
+        getJokeFunction(message)
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
