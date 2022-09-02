@@ -61,7 +61,7 @@ def game_markup():
 def getJokeFunction(message):
     joke = pyjokes.get_joke()
     bot.send_message(message.message.chat.id,joke)
-    bot.answer_callback_query(message.id, "ХУЙ")
+    bot.reply_to(message.message, "ХУЙ")
     bot.send_message(message.message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
 
 def createGameFunction(now_chat, message, from_who):
