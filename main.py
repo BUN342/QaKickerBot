@@ -60,8 +60,9 @@ def game_markup():
 
 def getJokeFunction(message):
     joke = pyjokes.get_joke()
-    bot.send_message(message.chat.id,joke)
-    bot.send_message(message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
+    bot.send_message(message.message.chat.id,joke)
+    bot.answer_callback_query(message.id, "ХУЙ")
+    bot.send_message(message.message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
 
 def createGameFunction(now_chat, message, from_who):
     isGame = now_chat.createGame(from_who)
@@ -210,7 +211,7 @@ def callback_query(call):
     elif call.data == "create_game":
         createGameFunction(now_chat, call.message, call.from_user.first_name)
     elif call.data == "top_joke":
-        getJokeFunction(call.message)
+        getJokeFunction(call)
     elif call.data == "game_start":
         startGame(now_chat, call.message, call.from_user.first_name)
     elif call.data == "game_stop":
