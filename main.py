@@ -48,6 +48,16 @@ def gen_markup():
                                InlineKeyboardButton("Шутка дня", callback_data="top_joke"))
     return markup
 
+def game_markup():
+    markup = InlineKeyboardMarkup()
+    markup.row_width = 2
+    markup.add(InlineKeyboardButton("Начать игру", callback_data="game_start"),
+                               InlineKeyboardButton("Отменить игру", callback_data="game_stop"),
+                               InlineKeyboardButton("Записаться на игру", callback_data="write_to_a_game"),
+                               InlineKeyboardButton("Моя команда победила", callback_data="win_game"),
+                               InlineKeyboardButton("Моя команда проиграла", callback_data="false_game"))
+    return markup
+
 def getJokeFunction(message):
     joke = pyjokes.get_joke()
     bot.send_message(message.chat.id,joke)
@@ -59,7 +69,82 @@ def createGameFunction(now_chat, message):
         bot.send_message(message.chat.id, 'Игру уже кто-то начал.\nЗаверши предыдущую, прежде чем начать новую.\nКомианда /gamestop')
         return
 
-    bot.send_message(message.chat.id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников, пиши /me, если хочешь присоединиться к игре.' % message.from_user.first_name)
+    bot.send_message(message.chat.id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников, пиши /me, если хочешь присоединиться к игре.' % message.from_user.first_name, reply_markup=game_markup())
+
+def writeOnAGame(now_chat, message):
+    isMe = now_chat.writeUserToGame(message.from_user.first_name)
+    if(isMe == 1):
+        bot.send_message(message.chat_id, '%s, в данный момент идёт игра, жди.' % message.from_user.first_name)
+    elif(isMe == 2):
+        bot.send_message(message.chat_id, 'Игроков уже достаточно.')
+    elif(isMe == 3):
+        bot.send_message(message.chat_id, 'Ты уже в игре, дай другим записаться.')
+    elif(isMe == 4):
+        bot.send_message(message.chat_id, 'И куда ты регаться пытаешься?')
+    else:
+        #bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.')
+        bot.send_message(message.chat_id, '%s, ты записался. \nЕсли все готовы, то пишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.' % message.from_user.first_name)
+
+def startGame(now_chat, message):
+    isGameStart = now_chat.gameStart(message.from_user.first_name)
+    if(isGameStart == 0):
+        bot.send_message(message.chat_id, 'Ты не создатель игры, иди лесом.')
+        return
+    elif(isGameStart == 1):
+        bot.send_message(message.chat_id, 'Слишком мало игроков для игры.')
+        return
+    elif(isGameStart == 2):
+        bot.send_message(message.chat_id, 'Идёт игра, жди очереди.')
+        return
+
+    players = isGameStart
+
+    teams = "Наши команды:\n"
+    team = list(players.items())
+
+    if(len(team) == 2):
+        teams += team[0][0] + " и " + team[1][0]
+    elif(len(team) == 4):
+        team = list(players.items())
+        teams += team[0][0] + " и " + team[1][0] + ",\n" + team[2][0] + " и " + team[3][0]
+            
+    bot.send_message(message.chat_id,teams + "\nИгра началась!")
+
+def stopGame(now_chat, message):
+    isGameStop = now_chat.gameStop(message.from_user.first_name)
+    if(isGameStop == 0):
+        bot.send_message(message.chat_id, 'Ты не создатель игры, иди лесом.')
+        return
+    elif (isGameStop == 1):
+        bot.send_message(message.chat_id, 'Игра даже не началась, отменять нечего.')
+        return
+    elif (isGameStop == 2):
+        bot.send_message(message.chat_id, 'Отменять нечего.')
+    elif (isGameStop == 3):
+        bot.send_message(message.chat_id, 'Игра отменена.')
+
+def winGame(now_chat, message):
+    isResult = now_chat.writeResult(True, message.from_user.first_name)
+    if(isResult == 0):
+        bot.send_message(message.chat_id, 'Ты не создатель игры, иди лесом.')
+        return
+    elif(isResult == 1):
+        bot.send_message(message.chat_id, 'Игра даже не началась.')
+        return
+    else:
+        bot.send_message(message.chat_id, 'Результаты зафиксированы.')
+
+def loseGame(now_chat, message):
+    isResult = now_chat.writeResult(False, message.from_user.first_name)
+    if(isResult == 0):
+        bot.send_message(message.chat_id, 'Ты не создатель игры, иди лесом.')
+        return
+    elif(isResult == 1):
+        bot.send_message(message.chat_id, 'Игра даже не началась.')
+        return
+    else:
+        bot.send_message(message.chat_id, 'Результаты зафиксированы.')
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -121,6 +206,16 @@ def callback_query(call):
         createGameFunction(now_chat, call.message)
     elif call.data == "top_joke":
         getJokeFunction(call.message)
+    elif call.data == "game_start":
+        startGame(now_chat, call.message)
+    elif call.data == "game_stop":
+        stopGame(now_chat, call.message)
+    elif call.data == "write_to_a_game":
+        writeOnAGame(now_chat, call.message)
+    elif call.data == "win_game":
+        winGame(now_chat, call.message)
+    elif call.data == "false_game":
+        loseGame(now_chat, call.message)
 
 @bot.message_handler(regexp="\/\w+[@\w]*")
 def handle_text(message):
@@ -149,78 +244,17 @@ def handle_text(message):
         else:
             bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
     elif text == "/game" or text == "/game@qakickerratingbot":
-        createGameFunction(message)
-        
+        createGameFunction(message)       
     elif text == "/me" or text == "/me@qakickerratingbot":
-        isMe = now_chat.writeUserToGame(message.from_user.first_name)
-        if(isMe == 1):
-            bot.send_message(chat_id, '%s, в данный момент идёт игра, жди.' % message.from_user.first_name)
-        elif(isMe == 2):
-            bot.send_message(chat_id, 'Игроков уже достаточно.')
-        elif(isMe == 3):
-            bot.send_message(chat_id, 'Ты уже в игре, дай другим записаться.')
-        elif(isMe == 4):
-            bot.send_message(chat_id, 'И куда ты регаться пытаешься?')
-        else:
-            #bot.send_message(chat_id, 'Все готовы?\nПишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.')
-            bot.send_message(chat_id, '%s, ты записался. \nЕсли все готовы, то пишите /gamestart, чтобы начать игру.\nИли /gamestop, если хотите отменить игру.' % message.from_user.first_name)
-
+        writeOnAGame(now_chat, message)
     elif text == "/gamestart" or text == "/gamestart@qakickerratingbot":
-        isGameStart = now_chat.gameStart(message.from_user.first_name)
-        if(isGameStart == 0):
-            bot.send_message(chat_id, 'Ты не создатель игры, иди лесом.')
-            return
-        elif(isGameStart == 1):
-            bot.send_message(chat_id, 'Слишком мало игроков для игры.')
-            return
-        elif(isGameStart == 2):
-            bot.send_message(chat_id, 'Идёт игра, жди очереди.')
-            return
-
-        players = isGameStart
-
-        teams = "Наши команды:\n"
-        team = list(players.items())
-
-        if(len(team) == 2):
-            teams += team[0][0] + " и " + team[1][0]
-        elif(len(team) == 4):
-            team = list(players.items())
-            teams += team[0][0] + " и " + team[1][0] + ",\n" + team[2][0] + " и " + team[3][0]
-            
-        bot.send_message(chat_id,teams + "\nИгра началась!")
+        startGame(now_chat, message)
     elif text == "/gamestop" or text == "/gamestop@qakickerratingbot":
-        isGameStop = now_chat.gameStop(message.from_user.first_name)
-        if(isGameStop == 0):
-            bot.send_message(chat_id, 'Ты не создатель игры, иди лесом.')
-            return
-        elif (isGameStop == 1):
-            bot.send_message(chat_id, 'Игра даже не началась, отменять нечего.')
-            return
-        elif (isGameStop == 2):
-            bot.send_message(chat_id, 'Отменять нечего.')
-        elif (isGameStop == 3):
-            bot.send_message(chat_id, 'Игра отменена.')
+        stopGame(now_chat, message)
     elif text == "/win" or text == "/win@qakickerratingbot":
-        isResult = now_chat.writeResult(True, message.from_user.first_name)
-        if(isResult == 0):
-            bot.send_message(chat_id, 'Ты не создатель игры, иди лесом.')
-            return
-        elif(isResult == 1):
-            bot.send_message(chat_id, 'Игра даже не началась.')
-            return
-        else:
-            bot.send_message(chat_id, 'Результаты зафиксированы.')
+        winGame(now_chat, message)
     elif text == "/lose" or text == "/lose@qakickerratingbot":
-        isResult = now_chat.writeResult(False, message.from_user.first_name)
-        if(isResult == 0):
-            bot.send_message(chat_id, 'Ты не создатель игры, иди лесом.')
-            return
-        elif(isResult == 1):
-            bot.send_message(chat_id, 'Игра даже не началась.')
-            return
-        else:
-            bot.send_message(chat_id, 'Результаты зафиксированы.')
+        loseGame(now_chat, message)
     elif text == "/mystat" or text == "/mystat@qakickerratingbot": 
         bot.send_message(chat_id, message.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % now_chat.getMe(message.from_user.first_name))
     elif text == "/allstats" or text == "/allstats@qakickerratingbot":
