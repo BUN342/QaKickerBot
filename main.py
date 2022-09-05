@@ -192,6 +192,10 @@ def footballMsg(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    global isStartPressed
+    if(isStartPressed is False):
+        bot.send_message(call.message.chat.id, 'Напишите /start')
+        return
     message = call.message
     now_chat = chats[call.message.chat.id]
 

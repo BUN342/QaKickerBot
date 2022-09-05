@@ -44,10 +44,13 @@ class Chat:
         elif(self.__regBegin is False):
             return 4
 
-        self.__players[userName] = self.__side
+        
 
         if(self.__side is True):
             self.__side = False
+        else:
+            self.__side = True
+        self.__players[userName] = self.__side
 
         return self.__players
     def writeResult(self, result, userName): 
@@ -72,8 +75,7 @@ class Chat:
             else:
                 usr.setScope(False, player, self.__cursor)
             self.__connection.commit()
-
-        self.__regBegin = False    
+   
         return self.__players
     
     def gameStart(self,userName): 
@@ -85,10 +87,11 @@ class Chat:
             return 2
 
         self.__isGameNow = True
+        self.__regBegin = False 
         return self.__players
 
     def gameStop(self,userName): 
-        if(self.__regBegin is True and userName != self.__creatorOfGame):
+        if(userName != self.__creatorOfGame):
             return 0
         elif(len(self.__players) > 0):
             self.__players = {}
