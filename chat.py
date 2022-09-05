@@ -76,6 +76,9 @@ class Chat:
                 usr.setScope(False, player, self.__cursor)
             self.__connection.commit()
    
+
+        self.__regBegin = False
+        self.__isGameNow = False
         return self.__players
     
     def gameStart(self,userName): 
