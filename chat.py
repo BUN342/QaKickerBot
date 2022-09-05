@@ -56,7 +56,7 @@ class Chat:
     def writeResult(self, result, userName): 
         if((self.__isGameNow is True or self.__regBegin is True) and userName != self.__creatorOfGame):
             return 0
-        elif(self.__isGameNow is False or self.__regBegin is False):
+        elif(self.__isGameNow is False):
             return 1
         
         if(result is True):
