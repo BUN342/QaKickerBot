@@ -91,7 +91,7 @@ class Chat:
             return 1
         elif(self.__isGameNow is True):
             return 2
-        elif(userName != self.__creatorOfGame)
+        elif(userName != self.__creatorOfGame):
             return 3
 
         self.__isGameNow = True
