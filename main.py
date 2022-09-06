@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 from telebot import types
 import threading
 import chat
-import pyjokes
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
 
@@ -47,7 +46,8 @@ def gen_markup():
     markup.add(InlineKeyboardButton("Создать игру", callback_data="create_game"),
                                InlineKeyboardButton("Вывести общую статистику", callback_data="allstat"),
                                InlineKeyboardButton("Вывести мою статистику", callback_data="mystat"),
-                               InlineKeyboardButton("Шутка дня", callback_data="top_joke"))
+                               InlineKeyboardButton("Шутка дня", callback_data="top_joke"),
+                               InlineKeyboardButton("Анекдот дня", callback_data="top_anekdot"))
     return markup
 
 def game_markup():
@@ -60,9 +60,9 @@ def game_markup():
                                InlineKeyboardButton("Моя команда проиграла", callback_data="false_game"))
     return markup
 
-def getJokeFunction(message):
-    joke = pyjokes.get_joke()
-    bot.send_message(message.message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
+def getJokeFunction(message, now_chat):
+    bot.send_message(message.message.chat.id, now_chat.getHohma(1))
+    #bot.send_message(message.message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
 
 def createGameFunction(now_chat, message, from_who):
     isGame = now_chat.createGame(from_who)
@@ -209,7 +209,7 @@ def callback_query(call):
     elif call.data == "create_game":
         createGameFunction(now_chat, call, call.from_user.first_name)
     elif call.data == "top_joke":
-        getJokeFunction(call)
+        getJokeFunction(call, now_chat)
     elif call.data == "game_start":
         startGame(now_chat, call, call.from_user.first_name)
     elif call.data == "game_stop":
@@ -220,6 +220,8 @@ def callback_query(call):
         winGame(now_chat, call, call.from_user.first_name)
     elif call.data == "false_game":
         loseGame(now_chat, call, call.from_user.first_name)
+    elif call.data == "top_anekdot":
+        getAnektod(call, now_chat)
 
     bot.answer_callback_query(call.id, "")
 
