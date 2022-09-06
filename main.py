@@ -8,7 +8,6 @@ from telebot import types
 import threading
 import chat
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-import random
 
 
 #TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
@@ -63,6 +62,13 @@ def game_markup():
 def getJokeFunction(message, now_chat):
     bot.send_message(message.message.chat.id, now_chat.getHohma(1))
     #bot.send_message(message.message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
+
+def getAnektod(message, now_chat):
+    anekdot = now_chat.getHohma(2)
+    if(anekdot[0] == True):
+         bot.send_message(message.message.chat.id, "Эта шутка уже была раньше, попробуй снова")
+    else:
+        bot.send_message(message.message.chat.id, anekdot)
 
 def createGameFunction(now_chat, message, from_who):
     isGame = now_chat.createGame(from_who)
