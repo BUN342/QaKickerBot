@@ -70,6 +70,7 @@ class Chat:
                 winSide = True
 
         usr = user.User()
+        self.__isGameNow = False
 
         for player in self.__players:
             if(self.__players[player] == winSide):
