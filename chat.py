@@ -142,7 +142,7 @@ class Chat:
         hohma = joke.Joke()
         answer = ""
 
-        if(type_hohma == '1'):
+        if(type_hohma == 1):
             answer = hohma.getJoke()
         else:
              answer = hohma.getAnekdot(self.__cursor)
