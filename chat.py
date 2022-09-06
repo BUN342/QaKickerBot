@@ -70,6 +70,7 @@ class Chat:
                 winSide = True
 
         usr = user.User()
+        self.__isGameNow = False
 
         for player in self.__players:
             if(self.__players[player] == winSide):
@@ -90,6 +91,8 @@ class Chat:
             return 1
         elif(self.__isGameNow is True):
             return 2
+        elif(userName != self.__creatorOfGame)
+            return 3
 
         self.__isGameNow = True
         self.__regBegin = False 
