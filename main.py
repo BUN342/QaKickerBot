@@ -204,7 +204,13 @@ def callback_query(call):
         bot.send_message(call.message.chat.id, 'Напишите /start')
         return
     message = call.message
-    now_chat = chats[call.message.chat.id]
+    global chats
+    key = call.message.chat.id
+    if(key not in chats):
+        now_chat = chat.Chat(conn)
+        chats[key] = now_chat
+    else: 
+        now_chat = chats[key]
 
     if call.data == "mystat": 
         bot.send_message(call.message.chat.id, call.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % now_chat.getMe(call.from_user.first_name))
