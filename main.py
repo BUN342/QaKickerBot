@@ -61,21 +61,8 @@ def game_markup():
     return markup
 
 def getJokeFunction(message):
-    randomValue = random.randint(1,3995)
-    data = (randomValue,)    
-    sqlSEL = "SELECT text,status FROM anek WHERE id = %s;"
-    sqlUPD = "UPDATE anek SET status = true WHERE id = %s" 
-    cursor.execute(sqlUPD, data)
-    cursor.execute(sqlSEL, data)
-    result = cursor.fetchall()
-    if (result[1] = true):
-         bot.send_message(message.message.chat.id, "Эта шутка уже была раньше, попробуй снова")
-    else:
-        print(result[0])
-        conn.commit()   
-        bot.send_message(message.message.chat.id,result)
-    #joke = pyjokes.get_joke()
-    #bot.send_message(message.message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
+    joke = pyjokes.get_joke()
+    bot.send_message(message.message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
 
 def createGameFunction(now_chat, message, from_who):
     isGame = now_chat.createGame(from_who)
