@@ -1,5 +1,6 @@
 import user
 import registration
+import joke
 
 class Chat:
     def __init__(self, connection):
@@ -112,9 +113,13 @@ class Chat:
         self.__regBegin = False
 
     def getMe(self, userName):
+
          usr = user.User()
+
          return usr.getScope(userName, self.__cursor)
+
     def getAll(self,):
+
         usr = user.User()
         sqlSEL = "SELECT tg_name, scope FROM users ORDER BY scope DESC;"
         self.__cursor.execute(sqlSEL)
@@ -131,3 +136,16 @@ class Chat:
                     stat += '\t\t\t' + str(n[0]) + ', ранг - %s, очков - %s.' % (str(i[0]), n[1]) + '\n'
                     break       
         return stat
+    
+    def getHohma(self, type_hohma):
+
+        hohma = joke.Joke()
+        answer = ""
+
+        if(type_hohma == '1'):
+            answer = hohma.getJoke()
+        else:
+             answer = hohma.getAnekdot(self.__cursor)
+             self.__connection.commit()
+        
+        return answer
