@@ -102,6 +102,9 @@ def startGame(now_chat, message, from_who):
     elif(isGameStart == 2):
         bot.answer_callback_query(message.id, 'Идёт игра, жди очереди.')
         return
+    elif(isGameStart == 3):
+        bot.answer_callback_query(message.id, 'Ты не создатель игры, иди лесом.')
+        return
 
     players = isGameStart
 
