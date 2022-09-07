@@ -287,30 +287,4 @@ def handle_text(message):
     else: 
         now_chat = chats[key]
 
-    # isReg = now_chat.registration(message.from_user.first_name)
-
-    # if (text == "/reg" or text == "/reg@qakickerratingbot"):
-    #     if(isReg is True):
-    #         bot.send_message(chat_id, message.from_user.first_name + ', ты зарегался и сейчас у тебя TRAINEE I ранг.\nДумал все так просто будет?')
-    #     else:
-    #         bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
-    # elif text == "/game" or text == "/game@qakickerratingbot":
-    #     createGameFunction(message, message.from_user.first_name)       
-    # elif text == "/me" or text == "/me@qakickerratingbot":
-    #     writeOnAGame(now_chat, message, message.from_user.first_name)
-    # elif text == "/gamestart" or text == "/gamestart@qakickerratingbot":
-    #     startGame(now_chat, message, message.from_user.first_name)
-    # elif text == "/gamestop" or text == "/gamestop@qakickerratingbot":
-    #     stopGame(now_chat, message, message.from_user.first_name)
-    # elif text == "/win" or text == "/win@qakickerratingbot":
-    #     winGame(now_chat, message, message.from_user.first_name)
-    # elif text == "/lose" or text == "/lose@qakickerratingbot":
-    #     loseGame(now_chat, message, message.from_user.first_name)
-    # elif text == "/mystat" or text == "/mystat@qakickerratingbot": 
-    #     bot.send_message(chat_id, message.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % now_chat.getMe(message.from_user.first_name))
-    # elif text == "/allstats" or text == "/allstats@qakickerratingbot":
-    #     bot.send_message(chat_id, now_chat.getAll())
-    # elif text == "/getjoke" or text == "/getjoke@qakickerratingbot":
-    #     getJokeFunction(message)
-# Запускаем бота
 bot.polling(none_stop=True, interval=0)
