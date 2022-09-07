@@ -62,8 +62,8 @@ def game_markup():
 
 def keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2)
-    itembtn1 = types.KeyboardButton('a')
-    markup.add(itembtn1, itembtn2, itembtn3)
+    itembtn1 = types.KeyboardButton('Хочу анекдот')
+    markup.add(itembtn1)
 
     return markup
     
@@ -236,10 +236,10 @@ def callback_query(call):
     elif call.data == "create_game":
         createGameFunction(now_chat, call, call.from_user.first_name)
     elif call.data == "top_joke":
-        if(isAnekdot is True):
-            bot.answer_callback_query(call.id, "На сегодня анекдоты закончились.")
-            return
-        isAnekdot = True
+        # if(isAnekdot is True):
+        #     bot.answer_callback_query(call.id, "На сегодня анекдоты закончились.")
+        #     return
+        # isAnekdot = True
         getJokeFunction(call, now_chat)
         
     elif call.data == "game_start":
@@ -253,14 +253,19 @@ def callback_query(call):
     elif call.data == "false_game":
         loseGame(now_chat, call, call.from_user.first_name)
     elif call.data == "top_anekdot":
-        if(isAnekdot is True):
-            bot.answer_callback_query(call.id, "На сегодня анекдоты закончились.")
-            return
+        # if(isAnekdot is True):
+        #     bot.answer_callback_query(call.id, "На сегодня анекдоты закончились.")
+        #     return
 
-        isAnekdot = True
+        # isAnekdot = True
         getAnektod(call, now_chat)
 
     bot.answer_callback_query(call.id, "")
+
+@bot.message_handler(func=lambda message:True)
+def button_handler(message):
+    anekdot = now_chat.getHohma(2)
+    bot.send_message(message.chat.id, anekdot)
 
 @bot.message_handler(regexp="\/\w+[@\w]*")
 def handle_text(message):
