@@ -203,6 +203,8 @@ def footballMsg(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    global isAnekdot
+
     global isStartPressed
     if(isStartPressed is False):
         bot.send_message(call.message.chat.id, 'Напишите /start')
@@ -225,7 +227,7 @@ def callback_query(call):
     elif call.data == "create_game":
         createGameFunction(now_chat, call, call.from_user.first_name)
     elif call.data == "top_joke":
-        global isAnekdot
+        
         isAnekdot = True
         getJokeFunction(call, now_chat)
         if(isAnekdot is True):
@@ -241,7 +243,7 @@ def callback_query(call):
     elif call.data == "false_game":
         loseGame(now_chat, call, call.from_user.first_name)
     elif call.data == "top_anekdot":
-        global isAnekdot
+
         isAnekdot = True
         getAnektod(call, now_chat)
         if(isAnekdot is True):
