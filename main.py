@@ -60,6 +60,14 @@ def game_markup():
                                InlineKeyboardButton("Моя команда проиграла", callback_data="false_game"))
     return markup
 
+def keyboard():
+    markup = types.ReplyKeyboardMarkup(row_width=2)
+    itembtn1 = types.KeyboardButton('a')
+    markup.add(itembtn1, itembtn2, itembtn3)
+
+    return markup
+    
+
 def getJokeFunction(message, now_chat):
     bot.send_message(message.message.chat.id, now_chat.getHohma(1))
     #bot.send_message(message.message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
@@ -161,6 +169,7 @@ def start(message):
     global isStartPressed
     if(isStartPressed is True):
         bot.send_message(message.chat.id, "Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.", reply_markup=gen_markup())
+        bot.reply_to(message, "", reply_markup=keyboard())
         #bot.send_message(message.chat.id, 'Бот уже работает, тебе заняться нечем?')
         return
     
