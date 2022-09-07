@@ -16,6 +16,7 @@ bot = telebot.TeleBot(TOKEN)
  
 chats = {}
 isStartPressed = False
+isAnekdot = False
 user = 'mdriysdmzxohga'
 password = 'd5016c9242569d17b84950f4d0cb9ba3be135fbdff7d89e09f96785d5845e9a2'
 db_name = 'dbf5g5orv48dsr'
@@ -224,7 +225,11 @@ def callback_query(call):
     elif call.data == "create_game":
         createGameFunction(now_chat, call, call.from_user.first_name)
     elif call.data == "top_joke":
+        global isAnekdot
+        isAnekdot = True
         getJokeFunction(call, now_chat)
+        if(isAnekdot is True):
+            bot.send_message(call.message.chat.id, "На сегодня анекдоты закончились.")
     elif call.data == "game_start":
         startGame(now_chat, call, call.from_user.first_name)
     elif call.data == "game_stop":
@@ -236,7 +241,11 @@ def callback_query(call):
     elif call.data == "false_game":
         loseGame(now_chat, call, call.from_user.first_name)
     elif call.data == "top_anekdot":
+        global isAnekdot
+        isAnekdot = True
         getAnektod(call, now_chat)
+        if(isAnekdot is True):
+            bot.send_message(call.message.chat.id, "На сегодня анекдоты закончились.")
 
     bot.answer_callback_query(call.id, "")
 
