@@ -169,7 +169,7 @@ def start(message):
     global isStartPressed
     if(isStartPressed is True):
         bot.send_message(message.chat.id, "Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.", reply_markup=gen_markup())
-        bot.reply_to(message, "", reply_markup=keyboard())
+        bot.reply_to(message, reply_markup=keyboard())
         #bot.send_message(message.chat.id, 'Бот уже работает, тебе заняться нечем?')
         return
     
