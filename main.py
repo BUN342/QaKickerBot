@@ -264,6 +264,9 @@ def callback_query(call):
 
 @bot.message_handler(func=lambda message:True)
 def button_handler(message):
+    if(message.text != "Хочу анекдот"):
+        return
+
     now_chat = chats[message.chat.id]
     anekdot = now_chat.getHohma(2)
     bot.send_message(message.chat.id, anekdot)
