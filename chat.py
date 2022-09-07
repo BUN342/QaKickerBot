@@ -82,6 +82,7 @@ class Chat:
 
         self.__regBegin = False
         self.__isGameNow = False
+        self.gameStop(self.__creatorOfGame)
         return self.__players
     
     def gameStart(self,userName): 
