@@ -11,7 +11,7 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
 #TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
-#TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
+TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
  
 chats = {}
@@ -58,15 +58,7 @@ def game_markup():
                                InlineKeyboardButton("Записаться на игру", callback_data="write_to_a_game"),
                                InlineKeyboardButton("Моя команда победила", callback_data="win_game"),
                                InlineKeyboardButton("Моя команда проиграла", callback_data="false_game"))
-    return markup
-
-def keyboard():
-    markup = types.ReplyKeyboardMarkup(row_width=2)
-    itembtn1 = types.KeyboardButton('Хочу анекдот')
-    markup.add(itembtn1)
-
-    return markup
-    
+    return markup    
 
 def getJokeFunction(message, now_chat):
     bot.send_message(message.message.chat.id, now_chat.getHohma(1))
@@ -169,7 +161,6 @@ def start(message):
     global isStartPressed
     if(isStartPressed is True):
         bot.send_message(message.chat.id, "Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.", reply_markup=gen_markup())
-        bot.reply_to(message, reply_markup=keyboard())
         #bot.send_message(message.chat.id, 'Бот уже работает, тебе заняться нечем?')
         return
     
@@ -261,15 +252,6 @@ def callback_query(call):
         getAnektod(call, now_chat)
 
     bot.answer_callback_query(call.id, "")
-
-@bot.message_handler(func=lambda message:True)
-def button_handler(message):
-    if(message.text != "Хочу анекдот"):
-        return
-
-    now_chat = chats[message.chat.id]
-    anekdot = now_chat.getHohma(2)
-    bot.send_message(message.chat.id, anekdot)
 
 @bot.message_handler(regexp="\/\w+[@\w]*")
 def handle_text(message):
