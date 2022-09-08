@@ -60,12 +60,15 @@ def game_markup():
                                InlineKeyboardButton("Моя команда проиграла", callback_data="false_game"))
     return markup
 
-def keyboard():
-    markup = types.ReplyKeyboardMarkup(row_width=2)
+def keyboard(message):
+    markup = types.ReplyKeyboardMarkup()
+    markup.resize_keyboard = True
+    markup.one_time_keyboard = True
     itembtn1 = types.KeyboardButton('Хочу анекдот')
     markup.add(itembtn1)
-
-    return markup
+    
+    #return markup
+    bot.send_message(message.chat.id, "Fucking button:", reply_markup=markup)
     
 
 def getJokeFunction(message, now_chat):
@@ -169,7 +172,6 @@ def start(message):
     global isStartPressed
     if(isStartPressed is True):
         bot.send_message(message.chat.id, "Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.", reply_markup=gen_markup())
-        bot.reply_to(message, reply_markup=keyboard())
         #bot.send_message(message.chat.id, 'Бот уже работает, тебе заняться нечем?')
         return
     
@@ -185,6 +187,7 @@ def start(message):
     t1.start()
     e1.set()
 
+    keyboard(message)
     bot.send_message(message.chat.id, "Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.", reply_markup=gen_markup())
 
 @bot.message_handler(commands=['help'])
@@ -267,7 +270,13 @@ def button_handler(message):
     if(message.text != "Хочу анекдот"):
         return
 
-    now_chat = chats[message.chat.id]
+    key = message.chat.id
+    if(key not in chats):
+        now_chat = chat.Chat(conn)
+        chats[key] = now_chat
+    else: 
+        now_chat = chats[key]
+
     anekdot = now_chat.getHohma(2)
     bot.send_message(message.chat.id, anekdot)
 
