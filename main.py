@@ -11,7 +11,7 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
 #TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
-#TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
+TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
  
 chats = {}
@@ -116,7 +116,7 @@ def startGame(now_chat, message, from_who):
         teams += team[0][0] + " vs " + team[1][0]
     elif(len(team) == 4):
         team = list(players.items())
-        teams += team[0][0] + " и " + team[2][0] + "\nvs\n" + team[1][0] + " и " + team[3][0]
+        teams += team[0][0] + " и " + team[1][0] + "\nvs\n" + team[2][0] + " и " + team[3][0]
             
     bot.send_message(message.message.chat.id,teams + "\nИгра началась!")
 

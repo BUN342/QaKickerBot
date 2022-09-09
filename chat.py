@@ -9,7 +9,7 @@ class Chat:
         self.__regBegin=False
         self.__connection=connection
         self.__cursor=connection.cursor()
-        self.__players={'Kirill': False, 'Артём': True, 'Yuriy': False}
+        self.__players={}
         self.__side = True
         self.__creatorOfGame = ""
     
@@ -28,8 +28,8 @@ class Chat:
         self.__side = True
         if(self.__isGameNow is True):
             return False
-        # elif(len(self.__players) != 0):
-        #     return False
+        elif(len(self.__players) != 0):
+            return False
 
         self.__regBegin = True
         self.__creatorOfGame = userName
@@ -81,8 +81,6 @@ class Chat:
             self.__connection.commit()
    
         self.gameStop(self.__creatorOfGame)
-        # self.__regBegin = False
-        # self.__isGameNow = False
         return self.__players
     
     def gameStart(self,userName): 
