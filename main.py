@@ -190,12 +190,12 @@ def help(message):
 @bot.message_handler(regexp="\w*\s*ф\w*\s*у\w*\s*т\w*\s*б\w*\s*о\w*\s*л")
 def footballMsg(message):
      chat_id =  message.chat.id
-     bot.send_message(message.chat.id, "Ага, я что-то услышал про футбол...\n", reply_markup=game_markup())
+     bot.send_message(message.chat.id, "Ага, я что-то услышал про футбол...\n", reply_markup=gen_markup())
 
 @bot.message_handler(regexp="\w*\s*f\w*\s*o\w*\s*o\w*\s*t\w*\s*b\w*\s*a\w*\s*l\w*\s*l")
 def footballMsg(message):
      chat_id =  message.chat.id
-     bot.send_message(message.chat.id, "Ага, я что-то услышал про футбол...\n", reply_markup=game_markup())
+     bot.send_message(message.chat.id, "Ага, я что-то услышал про футбол...\n", reply_markup=gen_markup())
 
 # @bot.message_handler(content_types=["sticker"])
 # def handle_sticker(message):
