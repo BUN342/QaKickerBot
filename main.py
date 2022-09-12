@@ -272,4 +272,12 @@ def handle_text(message):
     else: 
         now_chat = chats[key]
 
+    isReg = now_chat.registration(message.from_user.first_name)
+
+    if (text == "/reg" or text == "/reg@qakickerratingbot"):
+        if(isReg is True):
+            bot.send_message(chat_id, message.from_user.first_name + ', ты зарегался и сейчас у тебя TRAINEE I ранг.\nДумал все так просто будет?')
+        else:
+            bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
+
 bot.polling(none_stop=True, interval=0)
