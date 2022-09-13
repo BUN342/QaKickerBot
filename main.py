@@ -220,7 +220,7 @@ def callback_query(call):
 
     my_scope = now_chat.getMe(call.from_user.first_name)
     if(my_scope == -1):
-        bot.answer_callback_query(call.id, call.from_user.first_name + ', зарегайся сначала, чукча' )
+        bot.answer_callback_query(call.id, call.from_user.first_name + ', зарегайся сначала, чукча.\nКоманда /reg' )
         return
 
     if call.data == "mystat": 
