@@ -158,32 +158,32 @@ def loseGame(now_chat, message, from_who):
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    global isStartPressed
-    if(isStartPressed is True):
-        bot.send_message(message.chat.id, "Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.", reply_markup=gen_markup())
-        #bot.send_message(message.chat.id, 'Бот уже работает, тебе заняться нечем?')
-        return
+    # global isStartPressed
+    # if(isStartPressed is True):
+    #     bot.send_message(message.chat.id, "Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.", reply_markup=gen_markup())
+    #     #bot.send_message(message.chat.id, 'Бот уже работает, тебе заняться нечем?')
+    #     return
     
-    isStartPressed = True
+    # isStartPressed = True
 
     now_chat = chat.Chat(conn)
     global chats
     chats[message.chat.id] = now_chat
     #bot.send_message(message.chat.id, 'Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.')    
 
-    e1 = threading.Event()
-    t1 = threading.Thread(target=test_timer, args=(message,1800))
-    t1.start()
-    e1.set()
+    # e1 = threading.Event()
+    # t1 = threading.Thread(target=test_timer, args=(message,1800))
+    # t1.start()
+    # e1.set()
 
     bot.send_message(message.chat.id, "Привет, я - бот для подсчета вашего рейтинга.\nНапишите /help, чтобы узнать больше.", reply_markup=gen_markup())
 
 @bot.message_handler(commands=['help'])
 def help(message):
-    global isStartPressed
-    if(isStartPressed is False):
-        bot.send_message(message.chat.id, 'Напишите /start')
-        return
+    # global isStartPressed
+    # if(isStartPressed is False):
+    #     bot.send_message(message.chat.id, 'Напишите /start')
+    #     return
 
     bot.send_message(message.chat.id, 'Вот, что я могу:\n', reply_markup=gen_markup())
 
@@ -194,7 +194,6 @@ def footballMsg(message):
 
 @bot.message_handler(regexp="\w*\s*f\w*\s*o\w*\s*o\w*\s*t\w*\s*b\w*\s*a\w*\s*l\w*\s*l")
 def footballMsg(message):
-     chat_id =  message.chat.id
      bot.send_message(message.chat.id, "Ага, я что-то услышал про футбол...\n", reply_markup=gen_markup())
 
 # @bot.message_handler(content_types=["sticker"])
@@ -205,10 +204,10 @@ def footballMsg(message):
 def callback_query(call):
     global isAnekdot
 
-    global isStartPressed
-    if(isStartPressed is False):
-        bot.send_message(call.message.chat.id, 'Напишите /start')
-        return
+    # global isStartPressed
+    # if(isStartPressed is False):
+    #     bot.send_message(call.message.chat.id, 'Напишите /start')
+    #     return
     message = call.message
     global chats
     key = call.message.chat.id
@@ -260,10 +259,10 @@ def callback_query(call):
 
 @bot.message_handler(regexp="\/\w+[@\w]*")
 def handle_text(message):
-    global isStartPressed
-    if(isStartPressed is False):
-        bot.send_message(message.chat.id, 'Напишите /start')
-        return
+    # global isStartPressed
+    # if(isStartPressed is False):
+    #     bot.send_message(message.chat.id, 'Напишите /start')
+    #     return
 
     text = message.text.lower()
     chat_id =  message.chat.id
