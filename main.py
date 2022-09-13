@@ -190,12 +190,12 @@ def help(message):
 @bot.message_handler(regexp="\w*\s*ф\w*\s*у\w*\s*т\w*\s*б\w*\s*о\w*\s*л")
 def footballMsg(message):
      chat_id =  message.chat.id
-     bot.send_message(chat_id, "Ага, я что-то услышал про футбол...\nРегайся на на игру командой /game")
+     bot.send_message(message.chat.id, "Ага, я что-то услышал про футбол...\n", reply_markup=gen_markup())
 
 @bot.message_handler(regexp="\w*\s*f\w*\s*o\w*\s*o\w*\s*t\w*\s*b\w*\s*a\w*\s*l\w*\s*l")
 def footballMsg(message):
      chat_id =  message.chat.id
-     bot.send_message(chat_id, "Ага, я что-то услышал про футбол...\nРегайся на на игру командой /game")
+     bot.send_message(message.chat.id, "Ага, я что-то услышал про футбол...\n", reply_markup=gen_markup())
 
 # @bot.message_handler(content_types=["sticker"])
 # def handle_sticker(message):
@@ -274,5 +274,13 @@ def handle_text(message):
         chats[key] = now_chat
     else: 
         now_chat = chats[key]
+
+    isReg = now_chat.registration(message.from_user.first_name)
+
+    if (text == "/reg" or text == "/reg@qakickerratingbot"):
+        if(isReg is True):
+            bot.send_message(chat_id, message.from_user.first_name + ', ты зарегался и сейчас у тебя TRAINEE I ранг.\nДумал все так просто будет?')
+        else:
+            bot.send_message(chat_id, message.from_user.first_name + ', ты уже зарегался')
 
 bot.polling(none_stop=True, interval=0)
