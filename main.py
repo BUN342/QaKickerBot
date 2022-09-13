@@ -234,10 +234,10 @@ def callback_query(call):
     elif call.data == "create_game":
         createGameFunction(now_chat, call, call.from_user.first_name)
     elif call.data == "top_joke":
-        if(isAnekdot is True):
-            bot.answer_callback_query(call.id, "На сегодня анекдоты закончились.")
-            return
-        isAnekdot = True
+        # if(isAnekdot is True):
+        #     bot.answer_callback_query(call.id, "На сегодня анекдоты закончились.")
+        #     return
+        # isAnekdot = True
         getJokeFunction(call, now_chat)
         
     elif call.data == "game_start":
@@ -251,11 +251,11 @@ def callback_query(call):
     elif call.data == "false_game":
         loseGame(now_chat, call, call.from_user.first_name)
     elif call.data == "top_anekdot":
-        # if(isAnekdot is True):
-        #     bot.answer_callback_query(call.id, "На сегодня анекдоты закончились.")
-        #     return
+        if(isAnekdot is True):
+            bot.answer_callback_query(call.id, "На сегодня анекдоты закончились.")
+            return
 
-        # isAnekdot = True
+        isAnekdot = True
         getAnektod(call, now_chat)
 
     bot.answer_callback_query(call.id, "")
