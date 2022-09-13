@@ -81,7 +81,6 @@ def createGameFunction(now_chat, message, from_who):
 
 def writeOnAGame(now_chat, message, from_who):
     isMe = now_chat.writeUserToGame(from_who)
-    keys = list(isMe.keys())
     if(isMe == 1):
         bot.answer_callback_query(message.id, '%s, в данный момент идёт игра, жди.' % from_who)
     elif(isMe == 2):
@@ -91,6 +90,7 @@ def writeOnAGame(now_chat, message, from_who):
     elif(isMe == 4):
         bot.answer_callback_query(message.id, '%s, и куда ты регаться пытаешься?' % from_who)
     else:
+        keys = list(isMe.keys())
         bot.delete_message(message.message.chat.id, message.message.id)
         bot.send_message(message.message.chat.id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников.\nСейчас в %s/4 игроков в игре.' % (keys[0], len(isMe)), reply_markup=game_markup())
     
