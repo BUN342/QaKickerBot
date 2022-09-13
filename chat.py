@@ -47,8 +47,6 @@ class Chat:
         elif(self.__regBegin is False):
             return 4
 
-        
-
         if(self.__side is True):
             self.__side = False
         else:
