@@ -219,7 +219,10 @@ def callback_query(call):
         now_chat = chats[key]
 
     if call.data == "mystat": 
-        bot.send_message(call.message.chat.id, call.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % now_chat.getMe(call.from_user.first_name))
+        my_scope = now_chat.getMe(call.from_user.first_name)
+        if(my_scope == -1):
+            bot.send_message(call.message.chat.id, call.from_user.first_name + ', зарегайся сначала, чукча' )
+        bot.send_message(call.message.chat.id, call.from_user.first_name + ', твой ранг - %s. Давай поднажми, осталось совсем немного до нового ранга.' % my_scope)
         #bot.send_message(message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
     elif call.data == "allstat":
         bot.send_message(call.message.chat.id, now_chat.getAll())

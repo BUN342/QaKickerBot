@@ -31,6 +31,9 @@ class User:
         cursor.execute(sqlSEL, data)
         my_scope = cursor.fetchall()
 
+        if(my_scope is None):
+            return -1
+
         sql = "SELECT name, max_scope FROM grades ORDER BY max_scope ASC"
         cursor.execute(sql)
         grades = cursor.fetchall()
