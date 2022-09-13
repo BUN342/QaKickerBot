@@ -92,7 +92,7 @@ def writeOnAGame(now_chat, message, from_who):
     else:
         #bot.send_message(message.message.chat.id, '%s, ты записался.\nСейчас %s/4 игроков в игре.' % (from_who, len(isMe)))
         bot.delete_message(message.message.chat.id, message.message.id)
-        bot.send_message(message.message.chat.id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников.\nСейчас в 2/4 игроков в игре.' % from_who, reply_markup=game_markup())
+        bot.send_message(message.message.chat.id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников.\nСейчас в %s/4 игроков в игре.' % (from_who, len(isMe)), reply_markup=game_markup())
     
 def startGame(now_chat, message, from_who):
     isGameStart = now_chat.gameStart(from_who)
