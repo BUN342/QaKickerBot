@@ -54,7 +54,6 @@ class Chat:
         else:
             self.__side = True
         self.__players[userName] = self.__side
-        print(self.__players)
         return self.__players
     def writeResult(self, result, userName): 
         if((self.__isGameNow is True or self.__regBegin is True) and userName != self.__creatorOfGame):
