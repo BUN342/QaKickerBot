@@ -65,8 +65,8 @@ def getJokeFunction(message, now_chat):
 
 def getAnektod(message, now_chat):
     anekdot = now_chat.getHohma(2)
-    if(anekdot[0] != True):
-         bot.send_message(message.message.chat.id, "Эта шутка уже была раньше, попробуй снова")
+    if(anekdot[0] == -1):
+         bot.answer_callback_query(message.id, "Анекдоты закончились")
     else:
         bot.send_message(message.message.chat.id, anekdot)
 
@@ -204,7 +204,6 @@ def footballMsg(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
-    global isAnekdot
 
     # global isStartPressed
     # if(isStartPressed is False):
