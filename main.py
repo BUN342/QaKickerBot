@@ -268,7 +268,7 @@ def handle_text(message):
     else: 
         now_chat = chats[key]
 
-    isReg = now_chat.registration(message.from_user.first_name)
+    isReg = now_chat.registration(message.from_user.first_name, message.from_user.id)
 
     if (text == "/reg" or text == "/reg@qakickerratingbot"):
         if(isReg is True):

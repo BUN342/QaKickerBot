@@ -15,10 +15,10 @@ class Chat:
         self.__isAnek = False
     
     
-    def registration(self, userName): 
+    def registration(self, userName, userId): 
         reg = registration.Registration()
-        if reg.regCheck(userName, self.__cursor) is True:
-            reg.register(userName, self.__cursor)
+        if reg.regCheck(userName, userId, self.__cursor) is True:
+            reg.register(userName, userId, self.__cursor)
             self.__connection.commit()
             return True
         else:
