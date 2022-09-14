@@ -3,9 +3,9 @@ class User:
     #     self.__tg_name=name
     #     self.__scope=scope
 
-    def setScope(self, result, userName, cursor):
-        sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
-        data = (userName,)
+    def setScope(self, result, userId, cursor):
+        sqlSEL = "SELECT scope FROM users WHERE tg_id = %s;"
+        data = (userId,)
         cursor.execute(sqlSEL, data)
         user_scope = cursor.fetchall()
         coins = user_scope[0][0]            
@@ -18,16 +18,16 @@ class User:
             else:
                 coins -=25
         
-        sqlUPD = "UPDATE users SET scope = %s WHERE tg_name = %s;"
-        data = (coins, userName)
+        sqlUPD = "UPDATE users SET scope = %s WHERE tg_id = %s;"
+        data = (coins, userId)
         cursor.execute(sqlUPD, data)
 
     def getName(self):
         return self.__tg_name
 
-    def getScope(self, userName, cursor):
-        sqlSEL = "SELECT scope FROM users WHERE tg_name = %s;"
-        data = (userName,)
+    def getScope(self, userId, cursor):
+        sqlSEL = "SELECT scope FROM users WHERE tg_id = %s;"
+        data = (userId,)
         cursor.execute(sqlSEL, data)
         my_scope = cursor.fetchall()
 

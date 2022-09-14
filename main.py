@@ -70,16 +70,16 @@ def getAnektod(message, now_chat):
     else:
         bot.send_message(message.message.chat.id, anekdot)
 
-def createGameFunction(now_chat, message, from_who):
-    isGame = now_chat.createGame(from_who)
+def createGameFunction(now_chat, message, from_who, from_id):
+    isGame = now_chat.createGame(from_id)
     if(isGame is False):
         bot.answer_callback_query(message.id, 'Игру уже кто-то начал.\nЗаверши предыдущую, прежде чем начать новую.')
         return
 
     bot.send_message(message.message.chat.id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников.\nСейчас в 1/4 игроков в игре.' % from_who, reply_markup=game_markup())
 
-def writeOnAGame(now_chat, message, from_who):
-    isMe = now_chat.writeUserToGame(from_who)
+def writeOnAGame(now_chat, message, from_who, from_id):
+    isMe = now_chat.writeUserToGame(from_id)
     if(isMe == 1):
         bot.answer_callback_query(message.id, '%s, в данный момент идёт игра, жди.' % from_who)
     elif(isMe == 2):
@@ -94,8 +94,8 @@ def writeOnAGame(now_chat, message, from_who):
         bot.send_message(message.message.chat.id, 'Так, так, так.. Кто это тут у нас хочет начать игру?\nДавайте поможем %s собрать участников.\nСейчас в %s/4 игроков в игре.' % (keys[0], len(isMe)), reply_markup=game_markup())
     
     
-def startGame(now_chat, message, from_who):
-    isGameStart = now_chat.gameStart(from_who)
+def startGame(now_chat, message, from_who, from_id):
+    isGameStart = now_chat.gameStart(from_id)
     if(isGameStart == 0):
         bot.answer_callback_query(message.id, 'Ты не создатель игры, иди лесом.')
         return
@@ -122,8 +122,8 @@ def startGame(now_chat, message, from_who):
             
     bot.send_message(message.message.chat.id,teams + "\nИгра началась!")
 
-def stopGame(now_chat, message, from_who):
-    isGameStop = now_chat.gameStop(from_who)
+def stopGame(now_chat, message, from_who, from_id):
+    isGameStop = now_chat.gameStop(from_id)
     if(isGameStop == 0):
         bot.answer_callback_query(message.id, 'Ты не создатель игры, иди лесом.')
         return
@@ -135,8 +135,8 @@ def stopGame(now_chat, message, from_who):
     elif (isGameStop == 3):
         bot.send_message(message.message.chat.id, '%s отменил игру.' % from_who)
 
-def winGame(now_chat, message, from_who):
-    isResult = now_chat.writeResult(True, from_who)
+def winGame(now_chat, message, from_who, from_id):
+    isResult = now_chat.writeResult(True, from_id)
     if(isResult == 0):
         bot.answer_callback_query(message.id, 'Ты не создатель игры, иди лесом.')
         return
@@ -146,8 +146,8 @@ def winGame(now_chat, message, from_who):
     else:
         bot.send_message(message.message.chat.id, '%s объявил победу своей команды.' % from_who)
 
-def loseGame(now_chat, message, from_who):
-    isResult = now_chat.writeResult(False, from_who)
+def loseGame(now_chat, message, from_who, from_id):
+    isResult = now_chat.writeResult(False, from_id)
     if(isResult == 0):
         bot.answer_callback_query(message.id, 'Ты не создатель игры, иди лесом.')
         return
@@ -218,7 +218,7 @@ def callback_query(call):
     else: 
         now_chat = chats[key]
 
-    my_scope = now_chat.getMe(call.from_user.first_name)
+    my_scope = now_chat.getMe(call.from_user.id)
     if(my_scope == -1):
         bot.answer_callback_query(call.id, call.from_user.first_name + ', зарегайся сначала, чукча.\nКоманда /reg' )
         return
@@ -230,20 +230,20 @@ def callback_query(call):
         bot.send_message(call.message.chat.id, now_chat.getAll())
         #bot.send_message(message.chat.id, "\nЧто ещё могу предложить:", reply_markup=gen_markup())
     elif call.data == "create_game":
-        createGameFunction(now_chat, call, call.from_user.first_name)
+        createGameFunction(now_chat, call, call.from_user.first_name, call.from_user.id)
     elif call.data == "top_joke":
         getJokeFunction(call, now_chat)
         
     elif call.data == "game_start":
-        startGame(now_chat, call, call.from_user.first_name)
+        startGame(now_chat, call, call.from_user.first_name, call.from_user.id)
     elif call.data == "game_stop":
-        stopGame(now_chat, call, call.from_user.first_name)
+        stopGame(now_chat, call, call.from_user.first_name, call.from_user.id)
     elif call.data == "write_to_a_game":
-        writeOnAGame(now_chat, call, call.from_user.first_name)
+        writeOnAGame(now_chat, call, call.from_user.first_name, call.from_user.id)
     elif call.data == "win_game":
-        winGame(now_chat, call, call.from_user.first_name)
+        winGame(now_chat, call, call.from_user.first_name, call.from_user.id)
     elif call.data == "false_game":
-        loseGame(now_chat, call, call.from_user.first_name)
+        loseGame(now_chat, call, call.from_user.first_name, call.from_user.id)
     elif call.data == "top_anekdot":
         getAnektod(call, now_chat)
 

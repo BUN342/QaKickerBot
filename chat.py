@@ -17,7 +17,7 @@ class Chat:
     
     def registration(self, userName, userId): 
         reg = registration.Registration()
-        if reg.regCheck(userName, userId, self.__cursor) is True:
+        if reg.regCheck(userId, self.__cursor) is True:
             reg.register(userName, userId, self.__cursor)
             self.__connection.commit()
             return True
@@ -113,11 +113,11 @@ class Chat:
         self.__players = {}
         self.__regBegin = False
 
-    def getMe(self, userName):
+    def getMe(self, userId):
 
          usr = user.User()
 
-         return usr.getScope(userName, self.__cursor)
+         return usr.getScope(userId, self.__cursor)
 
     def getAll(self,):
 
