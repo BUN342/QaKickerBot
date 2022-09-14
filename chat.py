@@ -12,6 +12,7 @@ class Chat:
         self.__players={}
         self.__side = True
         self.__creatorOfGame = ""
+        self.__isAnek = False
     
     
     def registration(self, userName): 
@@ -138,7 +139,10 @@ class Chat:
         return stat
     
     def getHohma(self, type_hohma):
-
+        if(self.__isAnek is True):
+            return -1
+        else:
+            self.__isAnek = True
         hohma = joke.Joke()
         answer = ""
 
