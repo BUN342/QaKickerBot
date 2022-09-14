@@ -139,10 +139,10 @@ class Chat:
         return stat
     
     def getHohma(self, type_hohma):
-        if(self.__isAnek is True):
-            return -1
-        else:
-            self.__isAnek = True
+        # if(self.__isAnek is True and type_hohma != 1):
+        #     return -1
+        # else:
+        #     self.__isAnek = True
         hohma = joke.Joke()
         answer = ""
 
