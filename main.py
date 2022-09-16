@@ -10,8 +10,8 @@ import chat
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
-#TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
-TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
+TOKEN="5637357018:AAGg4dNhspCsx4kmk8ryk5yQ9Sl8mWqvK_Y"
+#TOKEN="5732654013:AAEs3Ke5uPUMiZBUk03DitDVVmteGiVENEE"
 bot = telebot.TeleBot(TOKEN)
  
 chats = {}
@@ -46,7 +46,8 @@ def gen_markup():
                                InlineKeyboardButton("Вывести общую статистику", callback_data="allstat"),
                                InlineKeyboardButton("Вывести мою статистику", callback_data="mystat"),
                                InlineKeyboardButton("Шутка дня", callback_data="top_joke"),
-                               InlineKeyboardButton("Анекдот дня", callback_data="top_anekdot"))
+                               InlineKeyboardButton("Анекдот дня", callback_data="top_anekdot"),
+                               InlineKeyboardButton("Мем дня", callback_data="top_mem"))
     return markup
 
 def game_markup():
@@ -157,6 +158,8 @@ def loseGame(now_chat, message, from_who, from_id):
     else:
         bot.send_message(message.message.chat.id, '%s объявил поражение своей команды.' % from_who)
 
+def getTopMem(message, now_chat):
+    topMem = now_chat.getMem()
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -246,6 +249,8 @@ def callback_query(call):
         loseGame(now_chat, call, call.from_user.first_name, call.from_user.id)
     elif call.data == "top_anekdot":
         getAnektod(call, now_chat)
+    elif call.data == "top_mem":
+        getTopMem(call, now_chat)
 
     bot.answer_callback_query(call.id, "")
 

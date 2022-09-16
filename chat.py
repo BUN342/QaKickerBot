@@ -1,6 +1,12 @@
 import user
 import registration
 import joke
+import praw
+from requests import Session
+from random import randint
+
+#bot_memes123
+#buruni123
 
 class Chat:
     def __init__(self, connection):
@@ -153,3 +159,26 @@ class Chat:
              self.__connection.commit()
         
         return answer
+
+
+    def getMem(self,):
+        # r = requests.get('https://www.reddit.com/r/dankmemes/search.json?q=mem')
+        # random_number = randint(1, 100)
+        # print(len(r.text.data.children))
+
+        reddit = praw.Reddit(
+            client_id="Inrbm3kN-i-eNNOmdX7aJA",
+            client_secret="	2MJ_iAus_p5WJpgSEiD5XfPDp0_2FQ",
+            user_agent="python"
+        )
+        for submission in reddit.subreddit("learnpython").hot(limit=10):
+            print(submission.title)
+
+
+        # sub = "dankmemes"
+        # count = 4
+        # sub_reddit = reddit.subreddit(sub)
+        # hot_meme = sub_reddit.hot(limit=count)
+        # result =[]
+        # for submissions in hot_meme:
+        #     print(submissions.title)
