@@ -16,10 +16,10 @@ bot = telebot.TeleBot(TOKEN)
  
 chats = {}
 isStartPressed = False
-user = 'mdriysdmzxohga'
-password = 'd5016c9242569d17b84950f4d0cb9ba3be135fbdff7d89e09f96785d5845e9a2'
-db_name = 'dbf5g5orv48dsr'
-host='ec2-34-242-8-97.eu-west-1.compute.amazonaws.com'
+user = 'tester'
+password = '123123'
+db_name = 'testdb'
+host='172.28.2.54'
 port = 5432
 rank = "TRAINEE I"
 POOL_TIME_FOR_GAME=5
